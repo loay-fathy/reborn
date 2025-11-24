@@ -4,26 +4,15 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { FileText, Download, X, Loader2, CalendarIcon, Filter, ChevronDown } from "lucide-react"
 import { format } from "date-fns"
+import { getAuthToken } from "@/lib/auth"
 
 type ReportType = "DailySummary" | "MonthlySummary" | "ProductPerformance"
 
 interface Report {
-    id: string
-    title: string
-    date: string
-    size: string
-    type: ReportType
+    id: number
+    generatedAt: string
+    type: string
 }
-
-const reportTypes: ReportType[] = ["DailySummary", "MonthlySummary", "ProductPerformance"]
-
-const initialReports: Report[] = [
-    { id: "1", title: "Q4 Financial Overview", date: "Dec 2024", size: "2.4 MB", type: "MonthlySummary" },
-    { id: "2", title: "Annual Marketing Strategy", date: "Jan 2025", size: "1.8 MB", type: "ProductPerformance" },
-    { id: "3", title: "User Growth Analysis", date: "Feb 2025", size: "3.2 MB", type: "DailySummary" },
-    { id: "4", title: "Technical Infrastructure Audit", date: "Mar 2025", size: "4.5 MB", type: "MonthlySummary" },
-    { id: "5", title: "Q1 Executive Summary", date: "Apr 2025", size: "1.2 MB", type: "DailySummary" },
-]
 
 interface ReportsModalProps {
     isOpen: boolean
@@ -31,58 +20,85 @@ interface ReportsModalProps {
 }
 
 export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
-    const [reports, setReports] = useState<Report[]>(initialReports)
+    const [reports, setReports] = useState<Report[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [date, setDate] = useState<string>("")
-    const [reportType, setReportType] = useState<ReportType | "all">("all")
+    const [reportType, setReportType] = useState<string>("all")
+    const [pageNumber, setPageNumber] = useState(1)
+    const [hasMore, setHasMore] = useState(true)
     const observerTarget = useRef<HTMLDivElement>(null)
+    const token = getAuthToken()
 
-    useEffect(() => {
-        if (isOpen) {
-            setReports(initialReports)
-            setDate("")
-            setReportType("all")
-        }
-    }, [isOpen])
-
+    // Reset state when modal opens or filters change
     useEffect(() => {
         if (isOpen) {
             setReports([])
+            setPageNumber(1)
+            setHasMore(true)
         }
-    }, [date, reportType, isOpen])
+    }, [isOpen, date, reportType])
 
-    const loadMoreReports = useCallback(async () => {
-        if (isLoading) return
+    const fetchReports = useCallback(async () => {
+        if (isLoading || !hasMore) return
         setIsLoading(true)
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        try {
+            const params = new URLSearchParams({
+                pageNumber: pageNumber.toString(),
+                pageSize: "10",
+            })
 
-        const nextId = reports.length + 1
-        const newReports: Report[] = Array.from({ length: 5 }).map((_, i) => {
-            const type = reportType === "all" ? reportTypes[Math.floor(Math.random() * reportTypes.length)] : reportType
-            const reportDate = date ? format(new Date(date), "MMM yyyy") : `Archive ${2024 - Math.floor((nextId + i) / 5)}`
-
-            return {
-                id: `${nextId + i}-${Date.now()}`,
-                title: `${type.replace(/([A-Z])/g, " $1").trim()} - ${reportDate}`,
-                date: reportDate,
-                size: `${(Math.random() * 5 + 1).toFixed(1)} MB`,
-                type: type,
+            if (reportType !== "all") {
+                params.append("type", reportType)
             }
-        })
+            if (date) {
+                params.append("date", date)
+            }
 
-        setReports((prev) => [...prev, ...newReports])
-        setIsLoading(false)
-    }, [reports.length, isLoading, date, reportType])
+            const res = await fetch(`/api/reports?${params.toString()}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
 
+            if (!res.ok) throw new Error("Failed to fetch reports")
+
+            const data = await res.json()
+
+            if (data.data && Array.isArray(data.data)) {
+                setReports((prev) => {
+                    // Filter out duplicates based on ID
+                    const newReports = data.data.filter((newReport: Report) =>
+                        !prev.some((existing) => existing.id === newReport.id)
+                    )
+                    return pageNumber === 1 ? data.data : [...prev, ...newReports]
+                })
+                setHasMore(pageNumber < data.totalPages)
+                if (pageNumber < data.totalPages) {
+                    setPageNumber(prev => prev + 1)
+                } else {
+                    setHasMore(false)
+                }
+            } else {
+                setHasMore(false)
+            }
+
+        } catch (error) {
+            console.error("Error fetching reports:", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [pageNumber, reportType, date, token, hasMore, isLoading])
+
+    // Initial load and infinite scroll
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && !isLoading) {
-                    loadMoreReports()
+                if (entries[0].isIntersecting && !isLoading && hasMore) {
+                    fetchReports()
                 }
             },
-            { threshold: 0.1 },
+            { threshold: 0.1 }
         )
 
         if (observerTarget.current) {
@@ -94,7 +110,45 @@ export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
                 observer.unobserve(observerTarget.current)
             }
         }
-    }, [loadMoreReports, isLoading])
+    }, [fetchReports, isLoading, hasMore])
+
+    // Trigger initial fetch when filters change (reset handled in other effect)
+    useEffect(() => {
+        if (isOpen && pageNumber === 1 && !isLoading) {
+            fetchReports()
+        }
+    }, [isOpen, date, reportType])
+
+
+    const handleDownload = async (id: number, title: string) => {
+        try {
+            const res = await fetch(`/api/reports/${id}/download`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            if (!res.ok) throw new Error("Failed to download report")
+
+            const blob = await res.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement("a")
+            a.href = url
+            a.download = `${title}.pdf`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+        } catch (error) {
+            console.error("Error downloading report:", error)
+            alert("Failed to download report")
+        }
+    }
+
+    const formatReportTitle = (type: string, dateStr: string) => {
+        const formattedDate = format(new Date(dateStr), "MMM dd, yyyy")
+        return `${type.replace(/([A-Z])/g, " $1").trim()} - ${formattedDate}`
+    }
 
     return (
         <AnimatePresence>
@@ -151,15 +205,13 @@ export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
                                     </div>
                                     <select
                                         value={reportType}
-                                        onChange={(e) => setReportType(e.target.value as ReportType | "all")}
+                                        onChange={(e) => setReportType(e.target.value)}
                                         className="w-full h-10 pl-9 pr-8 py-2 text-sm bg-white border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-zinc-900 appearance-none cursor-pointer"
                                     >
                                         <option value="all">All Types</option>
-                                        {reportTypes.map((type) => (
-                                            <option key={type} value={type}>
-                                                {type.replace(/([A-Z])/g, " $1").trim()}
-                                            </option>
-                                        ))}
+                                        <option value="DailySummary">Daily Summary</option>
+                                        <option value="MonthlySummary">Monthly Summary</option>
+                                        <option value="ProductPerformance">Product Performance</option>
                                     </select>
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
                                         <ChevronDown className="w-4 h-4" />
@@ -175,36 +227,40 @@ export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
                                         <p>No reports found matching your filters</p>
                                     </div>
                                 ) : (
-                                    reports.map((report, index) => (
-                                        <motion.div
-                                            key={report.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index < 5 ? index * 0.05 : 0 }}
-                                            className="group flex items-center justify-between p-4 rounded-xl hover:bg-zinc-50 transition-colors border border-transparent hover:border-zinc-100"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg group-hover:scale-110 transition-transform">
-                                                    <FileText className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-medium text-zinc-900">{report.title}</h3>
-                                                    <div className="flex items-center gap-2 text-xs text-zinc-500 mt-0.5">
-                                                        <span className="font-medium text-zinc-600">
-                                                            {report.type.replace(/([A-Z])/g, " $1").trim()}
-                                                        </span>
-                                                        <span>•</span>
-                                                        <span>{report.date}</span>
-                                                        <span>•</span>
-                                                        <span>{report.size}</span>
+                                    reports.map((report, index) => {
+                                        const title = formatReportTitle(report.type, report.generatedAt)
+                                        return (
+                                            <motion.div
+                                                key={report.id}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: index < 5 ? index * 0.05 : 0 }}
+                                                className="group flex items-center justify-between p-4 rounded-xl hover:bg-zinc-50 transition-colors border border-transparent hover:border-zinc-100"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg group-hover:scale-110 transition-transform">
+                                                        <FileText className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-medium text-zinc-900">{title}</h3>
+                                                        <div className="flex items-center gap-2 text-xs text-zinc-500 mt-0.5">
+                                                            <span className="font-medium text-zinc-600">
+                                                                {report.type.replace(/([A-Z])/g, " $1").trim()}
+                                                            </span>
+                                                            <span>•</span>
+                                                            <span>{format(new Date(report.generatedAt), "MMM dd, yyyy HH:mm")}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <button className="p-2 text-zinc-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
-                                                <Download className="w-4 h-4" />
-                                            </button>
-                                        </motion.div>
-                                    ))
+                                                <button
+                                                    onClick={() => handleDownload(report.id, title)}
+                                                    className="p-2 text-zinc-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                </button>
+                                            </motion.div>
+                                        )
+                                    })
                                 )}
 
                                 {/* Loading Sentinel */}
@@ -234,3 +290,4 @@ export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
         </AnimatePresence>
     )
 }
+

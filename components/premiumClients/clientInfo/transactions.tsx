@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Pagination from "../../ui/pagination";
+import Link from "next/link";
 
 type PaymentType = "Credit" | "Cash" | "Partial";
 
@@ -17,12 +18,14 @@ interface TransactionRecord {
 
 interface TransactionTableProps {
   transactions?: TransactionRecord[];
+  clientId?: string;
 }
 
 const ITEMS_PER_PAGE = 5;
 
 export default function TransactionTable({
   transactions = [],
+  clientId,
 }: TransactionTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -80,9 +83,9 @@ export default function TransactionTable({
         </h2>
 
         <div className="flex flex-wrap gap-3">
-          <button className="cursor-pointer bg-[#1EA348] hover:bg-[#18853a] text-white px-8 py-3 outline-none rounded-2xl font-semibold text-sm transition-all shadow-sm">
+          <Link href={`/premiumCashier/?id=${clientId}`} className="cursor-pointer bg-[#1EA348] hover:bg-[#18853a] text-white px-8 py-3 outline-none rounded-2xl font-semibold text-sm transition-all shadow-sm">
             $ Start New Order
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -139,9 +142,8 @@ export default function TransactionTable({
                       {formatCurrency(item.paid)}
                     </td>
                     <td
-                      className={`px-8 py-6 text-sm font-bold ${
-                        item.change > 0 ? "text-red-500" : "text-green-600"
-                      }`}
+                      className={`px-8 py-6 text-sm font-bold ${item.change > 0 ? "text-red-500" : "text-green-600"
+                        }`}
                     >
                       {formatCurrency(item.change)}
                     </td>

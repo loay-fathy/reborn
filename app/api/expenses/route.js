@@ -50,3 +50,57 @@ export async function GET(request) {
         });
     }
 }
+
+export async function POST(request) {
+    const token = getClientToken(request);
+
+    if (!token) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+        });
+    }
+
+    try {
+        const body = await request.json();
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/expenses`;
+
+        const res = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            let parsedError;
+
+            try {
+                parsedError = JSON.parse(errorText);
+            } catch {
+                parsedError = errorText || "Unknown error";
+            }
+
+            return new Response(
+                JSON.stringify({
+                    error: "Failed to create expense",
+                    details: parsedError,
+                }),
+                { status: res.status }
+            );
+        }
+
+        const data = await res.json();
+        return new Response(JSON.stringify(data), { status: 201 });
+    } catch (error) {
+        return new Response(
+            JSON.stringify({
+                error: "Internal Server Error",
+                details: error.message,
+            }),
+            { status: 500 }
+        );
+    }
+}

@@ -49,7 +49,7 @@ const SalesOverview = () => {
 
   return (
     // 1. Reduced padding on mobile (p-4) -> larger on desktop (md:p-8)
-    <div className="w-full bg-white p-4 md:p-8 rounded-[20px] shadow-sm border border-gray-100">
+    <div className="w-full bg-white p-4 md:p-8 rounded-[20px] shadow-sm">
       {/* --- Header Section --- */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
         {/* Title & Subtitle */}

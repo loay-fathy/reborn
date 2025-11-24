@@ -5,14 +5,14 @@ import { useState } from "react";
 
 const CheckoutProductItem = ({ item, onIncrease, onDecrease }) => {
   return (
-    <div className="rounded-4xl p-4 border-3 border-main-color flex flex-col">
+    <div className="rounded-4xl p-4 border-3 border-main-color flex flex-col aspect-[26/15]">
       <div className="flex flex-col items-center gap-3 xl:gap-10 xl:flex-row">
         <Image
           src={item.imageUrl}
           alt={item.name}
           width={100}
           height={75}
-          className="rounded-2xl"
+          className="rounded-2xl aspect-[4/3]"
         />
         <div className="flex flex-col gap-2 justify-center font-bold text-sm">
           <p> {item.name}</p>

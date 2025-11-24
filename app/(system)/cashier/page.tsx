@@ -276,10 +276,10 @@ export default function Cashier() {
   };
 
   return (
-    <div className="w-full grid grid-cols-7 gap-6 mt-4">
+    <div className="w-full h-[calc(100vh-2rem)] grid grid-cols-7 grid-rows-[auto_1fr] gap-6 mt-4 overflow-hidden">
       <div className="col-span-5 flex flex-row gap-4">
 
-        <div className="relative z-50">
+        <div className="relative z-40">
           <button
             className="relative bg-white w-30 h-20 flex items-center justify-center rounded-4xl cursor-pointer hover:bg-gray-50 transition-colors"
             onClick={() => setIsCartMenuOpen(!isCartMenuOpen)}
@@ -346,7 +346,7 @@ export default function Cashier() {
           className="w-full h-full p-2 rounded-l-2xl outline-none placeholder:font-semibold placeholder:text-secondary-color placeholder:text-xl"
         />
       </div>
-      <div className="col-span-5 flex flex-col gap-4">
+      <div className="col-span-5 flex flex-col gap-4 overflow-y-auto pr-2">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {loading ? (
             <div className="col-span-full text-center py-10">
@@ -387,68 +387,75 @@ export default function Cashier() {
         )}
       </div>
 
-      <section className="col-span-2 h-lvh flex flex-col justify-between bg-white rounded-4xl">
-        <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(100vh-220px)] p-5">
-          {activeCartItems.map((item) => (
+      <section className="col-span-2 h-full flex flex-col justify-between bg-white rounded-4xl overflow-hidden">
+        <div className="flex-1 flex flex-col gap-2 overflow-y-auto p-5">
+          {activeCartItems.length > 0 ? activeCartItems.map((item) => (
             <CheckoutProductItem
               key={item.id}
               item={item}
               onIncrease={() => updateQuantity(item.id, 1)}
               onDecrease={() => updateQuantity(item.id, -1)}
             />
-          ))}
+          )) : (
+            <div className="col-span-full text-center py-10">
+              <p className="text-lg text-secondary-color">No items in cart</p>
+            </div>
+          )}
         </div>
-
-        <div className="flex flex-col gap-1 mt-4 p-5">
-          <div className="flex justify-between text-lg">
-            <p className="font-semibold text-secondary-color text-lg">
-              Sub Total:
-            </p>
-            <p className="font-extrabold ">${subtotal}</p>
+        {/* Fixed Bottom Section */}
+        <div className="flex-none bg-white">
+          <OvalLine className="w-full h-px bg-gray-100" />
+          <div className="flex flex-col gap-2 2xl:gap-3 px-5 pt-5 pb-3 2xl:px-7 2xl:pt-7 2xl:pb-5">
+            <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
+              <p className="text-secondary-color">Sub Total</p>
+              <p className="text-black">${subtotal}</p>
+            </div>
+            <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
+              <p className="text-secondary-color">Discount</p>
+              <p className="text-black">0%</p>
+            </div>
+            <OvalLine className="h-px bg-gray-100" />
+            <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
+              <p className="text-black">Total</p>
+              <p className="text-black">${totalAmount}</p>
+            </div>
           </div>
 
-          <OvalLine className="my-4 h-px" />
-          <div className="flex justify-between text-lg">
-            <p className="font-semibold text-secondary-color text-lg">Total:</p>
-            <p className="font-extrabold ">
-              ${totalAmount}
-            </p>
+          {/* Payment Methods */}
+          <div className="flex flex-col gap-y-3 2xl:gap-y-4 items-end w-full">
+            <motion.button
+              className="flex items-center justify-center gap-3 text-xl 2xl:text-2xl text-white font-bold h-[60px] 2xl:h-[75px] rounded-l-4xl cursor-pointer"
+              onClick={() => togglePaymentMethod("card")}
+              initial={false}
+              animate={{
+                width: isCardSelected ? "250px" : "180px",
+                backgroundColor: isCardSelected ? "#bc7428" : "#848382",
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <CreditCard size={35} className="2xl:w-10 2xl:h-10" />
+              Card
+            </motion.button>
+            <motion.button
+              className="flex items-center justify-center gap-3 text-xl 2xl:text-2xl text-white font-bold h-[60px] 2xl:h-[75px] rounded-l-4xl cursor-pointer"
+              onClick={() => togglePaymentMethod("cash")}
+              initial={false}
+              animate={{
+                width: isCashSelected ? "250px" : "180px",
+                backgroundColor: isCashSelected ? "#bc7428" : "#848382",
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <Coins size={35} className="2xl:w-10 2xl:h-10" />
+              Cash
+            </motion.button>
+            <button
+              className="w-full bg-black text-white text-xl 2xl:text-2xl font-bold h-[60px] 2xl:h-[75px] rounded-l-4xl cursor-pointer"
+              onClick={handleConfirmOrder}
+            >
+              Confirm Order
+            </button>
           </div>
-        </div>
-        {/* Payment Methods */}
-        <div className="flex flex-col gap-y-2 items-end">
-          <motion.button
-            className="flex items-center justify-center gap-3 text-xl text-white font-bold py-4 rounded-l-4xl cursor-pointer"
-            onClick={() => togglePaymentMethod("card")}
-            initial={false}
-            animate={{
-              width: isCardSelected ? "71.42%" : "57.14%", // 5/7 vs 4/7
-              backgroundColor: isCardSelected ? "#bc7428" : "#848382",
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <CreditCard size={35} />
-            Card
-          </motion.button>
-          <motion.button
-            className="flex items-center justify-center gap-3 text-xl text-white font-bold py-4 rounded-l-4xl cursor-pointer"
-            onClick={() => togglePaymentMethod("cash")}
-            initial={false}
-            animate={{
-              width: isCashSelected ? "71.42%" : "57.14%", // 5/7 vs 4/7
-              backgroundColor: isCashSelected ? "#bc7428" : "#848382",
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <Coins size={35} />
-            Cash
-          </motion.button>
-          <button
-            className="w-full bg-black text-white text-xl font-bold py-4 rounded-l-4xl cursor-pointer"
-            onClick={handleConfirmOrder}
-          >
-            Confirm Order
-          </button>
         </div>
       </section>
 

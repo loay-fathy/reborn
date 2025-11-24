@@ -243,10 +243,10 @@ export default function PremiumCashier() {
     }
 
     return (
-        <div className="w-full grid grid-cols-7 gap-6 mt-4">
+        <div className="w-full h-[calc(100vh-2rem)] grid grid-cols-7 grid-rows-[auto_1fr] gap-6 mt-4 overflow-hidden">
             <div className="col-span-5 flex flex-row gap-4">
 
-                <div className="relative z-50">
+                <div className="relative z-40">
                     <button
                         className="relative bg-white w-20 h-20 flex items-center justify-center rounded-4xl cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => router.push(`/premiumClients/${id}`)}
@@ -255,7 +255,6 @@ export default function PremiumCashier() {
                     </button>
                 </div>
                 <CashierNav onCategoryChange={setSelectedCategoryId} />
-
             </div>
             <div className="bg-white rounded-l-4xl col-span-2 flex flex-row items-center justify-center gap-3 px-10">
                 <Search className="text-main-color" size={30} />
@@ -267,7 +266,7 @@ export default function PremiumCashier() {
                     className="w-full h-full p-2 rounded-l-2xl outline-none placeholder:font-semibold placeholder:text-secondary-color placeholder:text-xl"
                 />
             </div>
-            <div className="col-span-5 flex flex-col gap-4">
+            <div className="col-span-5 flex flex-col gap-4 overflow-y-auto pr-2 h-full min-h-0">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {loading ? (
                         <div className="col-span-full text-center py-10">
@@ -308,8 +307,8 @@ export default function PremiumCashier() {
                 )}
             </div>
 
-            <section className="col-span-2 h-lvh flex flex-col justify-between bg-white rounded-4xl">
-                <div className="flex flex-col gap-2 overflow-y-auto max-h-[calc(100vh-220px)] p-5">
+            <section className="col-span-2 h-full flex flex-col justify-between bg-white rounded-4xl overflow-hidden min-h-0">
+                <div className="flex-1 flex flex-col gap-2 overflow-y-auto p-5">
                     {/* <h2 className="text-xl font-bold text-main-color mb-2">{userName}</h2> */}
                     {cart.length > 0 ? cart.map((item) => (
                         <CheckoutProductItem

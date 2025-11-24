@@ -1,3 +1,5 @@
+import { getClientToken } from "@/lib/auth";
+
 export async function PUT(request, { params }) {
     const token = getClientToken(request);
     if (!token) {

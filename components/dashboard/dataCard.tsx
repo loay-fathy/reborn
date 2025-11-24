@@ -5,7 +5,7 @@ interface DataCardProps {
   title: string;
   value: string;
   countText: string;
-  percentage: number;
+  percentage?: number;
   isPositive?: boolean;
   icon?: LucideIcon;
 }
@@ -14,8 +14,8 @@ const DataCard = ({
   title = "Today's Sales",
   value = "$4,850",
   countText = "245 orders completed",
-  percentage = 12.5,
-  isPositive = true,
+  percentage,
+  isPositive,
   icon: Icon = Banknote,
 }: DataCardProps) => {
   return (
@@ -25,14 +25,15 @@ const DataCard = ({
           {/* Icon scales slightly on larger screens */}
           <Icon className="text-main-color w-6 h-6 lg:w-[30px] lg:h-[30px]" />
         </div>
-        <div
-          className={`flex items-center gap-1 font-semibold text-sm lg:text-base ${
-            isPositive ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          {isPositive ? <ArrowUp size={18} /> : <ArrowDown size={18} />}
-          <p>{Math.abs(percentage)}%</p>
-        </div>
+        {percentage && (
+          <div
+            className={`flex items-center gap-1 font-semibold text-sm lg:text-base ${isPositive ? "text-green-500" : "text-red-500"
+              }`}
+          >
+            {isPositive ? <ArrowUp size={18} /> : <ArrowDown size={18} />}
+            <p>{Math.abs(percentage)}%</p>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-1">

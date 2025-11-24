@@ -6,7 +6,9 @@
   --main-color: #bc7428;
   --secondary-color: #848382;
 }
-
+* {
+  outline: none;
+}
 button {
   cursor: pointer;
 }

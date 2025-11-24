@@ -53,7 +53,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
             transition={{ duration: 0.3, type: "spring", damping: 25 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6"
           >
-            <div className="bg-white w-full sm:w-[95%] md:w-[90%] lg:w-[85%] xl:w-[80%] rounded-3xl sm:rounded-4xl md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col aspect-2/1 max-h-[90vh]">
+            <div className="bg-white w-full sm:w-[95%] md:w-[90%] lg:w-[85%] xl:w-[80%] rounded-3xl sm:rounded-4xl md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
               {/* --- Header Section --- */}
               <div className="flex items-center justify-between p-3 sm:p-4 md:p-6 lg:p-8 shrink-0">
                 <div className="flex items-center gap-2 sm:gap-3 md:gap-8">

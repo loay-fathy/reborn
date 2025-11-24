@@ -1,9 +1,10 @@
 "use client";
-import { Search, Pencil, Trash2, Package, Plus, X } from "lucide-react";
+import { Search, Pencil, Trash2, Package, Plus, X, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import CreationButton from "@/components/ui/creationButton";
 import ProductModal from "@/components/productModal";
+import CategoryModal from "@/components/categoryModal";
 import Pagination from "@/components/ui/pagination";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -67,7 +68,7 @@ export function CashierNav({
           }}
           className="overflow-hidden w-full"
         >
-          <ul className="w-full grid lg:grid-cols-3 sm:grid-cols-3 grid-cols-2 items-center justify-between gap-5 text-center py-3 ">
+          <ul className="w-full grid lg:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between gap-5 text-center py-3 ">
             <li
               className={`cursor-pointer py-3 rounded-2xl text-xl font-semibold text-secondary-color hover:bg-main-color hover:text-white ${selectedCategory === null
                 ? " bg-main-color text-white"
@@ -128,6 +129,7 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -264,51 +266,60 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Search Button/Bar */}
-        <div className="relative flex justify-center z-50">
-          <motion.button
-            key="search-button"
-            onClick={() => setIsSearchOpen((prev) => !prev)}
-            className="flex items-center gap-2 text-2xl font-semibold bg-main-color hover:bg-main-color/90 text-white px-12 py-4 rounded-3xl transition-colors"
+        <div className="flex items-center gap-3 mb-4 md:mb-0">
+          {/* Search Button/Bar */}
+          <button
+            onClick={() => setIsCategoryModalOpen(true)}
+            className="flex items-center gap-2 text-2xl font-semibold bg-[#1F2937] hover:bg-[#1F2937]/90 text-white px-6 py-4 rounded-3xl transition-colors"
           >
-            <Search className="w-7 h-7" />
-            <span className="font-semibold text-2xl">Search</span>
-          </motion.button>
+            <SlidersHorizontal size={25} />
+            <span className="font-semibold text-2xl">Categories</span>
+          </button>
+          <div className="relative flex justify-center z-50">
+            <motion.button
+              key="search-button"
+              onClick={() => setIsSearchOpen((prev) => !prev)}
+              className="flex items-center gap-2 text-2xl font-semibold bg-main-color hover:bg-main-color/90 text-white px-9 py-4 rounded-3xl transition-colors"
+            >
+              <Search className="w-7 h-7" />
+              <span className="font-semibold text-2xl">Search</span>
+            </motion.button>
 
-          <AnimatePresence>
-            {isSearchOpen && (
-              <motion.div
-                key="search-dropdown"
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="absolute top-full mt-3 right-0 w-[500px] bg-main-color rounded-4xl p-4 shadow-2xl origin-top"
-              >
-                <div className="flex items-center justify-between mb-3 px-2">
-                  <input
-                    type="text"
-                    placeholder="Search for product"
-                    autoFocus
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-transparent text-white placeholder-white/90 outline-none text-lg w-full font-medium"
+            <AnimatePresence>
+              {isSearchOpen && (
+                <motion.div
+                  key="search-dropdown"
+                  initial={{ opacity: 0, top: -15, right: -15, scale: 0.95 }}
+                  animate={{ opacity: 1, top: 0, right: 0, scale: 1 }}
+                  exit={{ opacity: 0, top: -15, right: -15, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-full w-[50dvw] bg-main-color rounded-4xl p-4 shadow-2xl origin-top"
+                >
+                  <div className="flex items-center justify-between mb-3 px-2">
+                    <input
+                      type="text"
+                      placeholder="Search for product"
+                      autoFocus
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-transparent text-white placeholder-white/90 outline-none text-lg w-full font-medium"
+                    />
+                    <button
+                      onClick={() => setIsSearchOpen(false)}
+                      className="text-white hover:text-white/80 transition-colors"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  <CashierNav
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={setSelectedCategory}
                   />
-                  <button
-                    onClick={() => setIsSearchOpen(false)}
-                    className="text-white hover:text-white/80 transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <CashierNav
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={setSelectedCategory}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
@@ -363,7 +374,7 @@ const Products = () => {
                         width={274}
                         height={100}
                         alt={product.name}
-                        className="w-64 h-24 aspect-[2.7/1] object-cover"
+                        className="max-w-11/12 rounded-xl h-24 aspect-[2.7/1] object-cover"
                       />
                     </div>
                   </td>
@@ -437,6 +448,12 @@ const Products = () => {
         onClose={() => setIsModalOpen(false)}
         product={selectedProduct}
         onSave={handleSave}
+      />
+
+      <CategoryModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        type="product"
       />
     </div>
   );

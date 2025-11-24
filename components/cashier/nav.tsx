@@ -10,7 +10,7 @@ interface Category {
 }
 
 interface CashierNavProps {
-  onCategoryChange?: (categoryId: number) => void;
+  onCategoryChange?: (categoryId: number | null) => void;
 }
 
 export default function CashierNav({ onCategoryChange }: CashierNavProps) {
@@ -37,17 +37,21 @@ export default function CashierNav({ onCategoryChange }: CashierNavProps) {
           throw new Error("Failed to fetch categories");
         }
         const data = await response.json();
-        setCategories(data);
-        if (data.length > 0) {
-          const firstCategoryId = data[0].id;
-          setSelectedCategoryId(firstCategoryId);
+
+        const allCategory = { id: -1, name: "All" };
+        const allCategories = [allCategory, ...data];
+
+        setCategories(allCategories);
+
+        if (allCategories.length > 0) {
+          setSelectedCategoryId(allCategory.id);
           if (onCategoryChange) {
-            onCategoryChange(firstCategoryId);
+            onCategoryChange(null);
           }
         }
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "حدث خطأ غير متوقع";
+          err instanceof Error ? err.message : "unexpected error";
         setError(errorMessage);
         console.error("Error fetching categories:", err);
       } finally {
@@ -74,7 +78,7 @@ export default function CashierNav({ onCategoryChange }: CashierNavProps) {
 
     // Notify parent component about category change
     if (onCategoryChange) {
-      onCategoryChange(categoryId);
+      onCategoryChange(categoryId === -1 ? null : categoryId);
     }
   };
 
@@ -91,7 +95,7 @@ export default function CashierNav({ onCategoryChange }: CashierNavProps) {
           }}
           className="overflow-hidden w-full"
         >
-          <ul className="w-full grid lg:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between gap-5 text-center py-2 ">
+          <ul className="w-full grid sm:grid-cols-3 grid-cols-2 items-center justify-between gap-5 text-center py-2 ">
             {loading ? (
               <li className="col-span-full py-4 text-secondary-color">
                 Loading categories...

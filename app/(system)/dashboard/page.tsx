@@ -60,7 +60,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col gap-10 mt-20 mr-20">
+    <div className="flex flex-col gap-10 mt-10 mr-10 sm:mt-20 sm:mr-20">
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
@@ -76,10 +76,7 @@ export default function DashboardPage() {
             <FileText size={20} />
             <span className="whitespace-nowrap">Download Report</span>
           </button>
-          <button className="bg-white rounded-xl h-fit text-black font-semibold flex gap-2 p-3 cursor-pointer hover:bg-gray-50 transition-colors border border-gray-200 md:border-transparent">
-            <Calendar size={20} />
-            Today
-          </button>
+
         </div>
       </section>
       <section className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">

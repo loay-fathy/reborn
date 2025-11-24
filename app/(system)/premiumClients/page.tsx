@@ -113,13 +113,16 @@ export default function PremiumClientsPage() {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to delete client");
+        const errorData = await res.json().catch(() => ({}));
+        // Check for the specific error details from the backend
+        const errorMessage = errorData.details?.message || errorData.details || errorData.error || "Failed to delete client";
+        throw new Error(errorMessage);
       }
 
       fetchClients(); // Refresh list
     } catch (error) {
       console.error("Error deleting client:", error);
-      alert("Failed to delete client");
+      alert(error instanceof Error ? error.message : "Failed to delete client");
     }
   };
 

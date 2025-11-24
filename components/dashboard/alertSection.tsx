@@ -39,6 +39,7 @@ const NotificationsCard = () => {
   }, []);
 
   const formatTimeAgo = (dateString: string) => {
+    console.log(dateString)
     const date = new Date(dateString);
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -80,7 +81,7 @@ const NotificationsCard = () => {
   };
 
   return (
-    <div className="w-full h-full bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3 overflow-y-scroll">
+    <div className="w-full h-full min-h-[400px] bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-base md:text-lg font-bold text-[#1F2937]">
           Notifications
@@ -90,32 +91,34 @@ const NotificationsCard = () => {
         </span>
       </div>
 
-      {isLoading ? (
-        <div className="text-center text-secondary-color py-10">Loading...</div>
-      ) : (
-        notifications.map((notification, index) => {
-          const styles = getSeverityStyles(notification.severity);
-          return (
-            <div
-              key={index}
-              className={`${styles.bg} border ${styles.border} rounded-xl p-3 md:p-4 flex gap-3 items-start`}
-            >
-              {styles.icon}
-              <div>
-                <h4 className="font-bold text-[#111827] text-sm">
-                  {notification.type}
-                </h4>
-                <p className="text-gray-600 text-xs mt-0.5">
-                  {notification.message}
-                </p>
-                <span className="text-gray-400 text-[10px] mt-1 block">
-                  {formatTimeAgo(notification.time)}
-                </span>
+      <div className="flex flex-col gap-3 overflow-y-scroll">
+        {isLoading ? (
+          <div className="text-center text-secondary-color py-10">Loading...</div>
+        ) : (
+          notifications.map((notification, index) => {
+            const styles = getSeverityStyles(notification.severity);
+            return (
+              <div
+                key={index}
+                className={`${styles.bg} border ${styles.border} rounded-xl p-3 md:p-4 flex gap-3 items-start`}
+              >
+                {styles.icon}
+                <div>
+                  <h4 className="font-bold text-[#111827] text-sm">
+                    {notification.type}
+                  </h4>
+                  <p className="text-gray-600 text-xs mt-0.5">
+                    {notification.message}
+                  </p>
+                  <span className="text-gray-400 text-[10px] mt-1 block">
+                    {formatTimeAgo(notification.time)}
+                  </span>
+                </div>
               </div>
-            </div>
-          );
-        })
-      )}
+            );
+          })
+        )}
+      </div>
     </div>
   );
 };

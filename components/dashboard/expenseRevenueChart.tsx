@@ -149,7 +149,7 @@ const ExpenseRevenueChart = () => {
 
       {/* --- Chart Section --- */}
       {/* Height adjusts: 300px on mobile, 350px on desktop */}
-      <div className="h-[250px] md:h-[250px] w-full relative">
+      <div className="h-[250px] md:h-[250px] w-full relative  [&_.recharts-surface]:outline-none [&_.recharts-wrapper]:outline-none">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
             <span className="text-main-color font-semibold">Loading...</span>
