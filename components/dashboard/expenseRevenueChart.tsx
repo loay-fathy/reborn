@@ -81,7 +81,7 @@ const ExpenseRevenueChart = () => {
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 rounded-full bg-[#C08B5C]"></div>
             <span className="text-sm text-gray-600">
-              Revenue:{" "}
+              Revenu:{" "}
               <span className="font-semibold">
                 ${payload[0].value.toLocaleString()}
               </span>
@@ -90,7 +90,7 @@ const ExpenseRevenueChart = () => {
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-[#E5E7EB]"></div>
             <span className="text-sm text-gray-600">
-              Expenses:{" "}
+              Depense:{" "}
               <span className="font-semibold">
                 ${payload[1].value.toLocaleString()}
               </span>
@@ -109,10 +109,10 @@ const ExpenseRevenueChart = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
         <div>
           <h2 className="text-xl md:text-2xl font-bold text-[#111827]">
-            Expense vs Revenue
+            Dépenses vs Revenus
           </h2>
           <p className="text-gray-500 text-sm mt-1">
-            Financial balance overview
+            Vue d'ensemble du solde financier
           </p>
         </div>
 
@@ -139,11 +139,11 @@ const ExpenseRevenueChart = () => {
       <div className="flex justify-end gap-6 mb-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-[#C08B5C]"></div>
-          <span className="text-sm font-medium text-gray-500">Revenue</span>
+          <span className="text-sm font-medium text-gray-500">Revenu</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-[#E5E7EB]"></div>
-          <span className="text-sm font-medium text-gray-500">Expenses</span>
+          <span className="text-sm font-medium text-gray-500">Depense</span>
         </div>
       </div>
 
@@ -152,7 +152,7 @@ const ExpenseRevenueChart = () => {
       <div className="h-[250px] md:h-[250px] w-full relative  [&_.recharts-surface]:outline-none [&_.recharts-wrapper]:outline-none">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-            <span className="text-main-color font-semibold">Loading...</span>
+            <span className="text-main-color font-semibold">Chargement...</span>
           </div>
         )}
         <ResponsiveContainer width="100%" height="100%">

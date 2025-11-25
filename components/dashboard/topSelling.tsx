@@ -46,14 +46,14 @@ const TopSellingProducts = () => {
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg md:text-xl font-bold text-[#111827]">
-          Top Selling Products
+          Produits les Plus Vendus
         </h2>
       </div>
 
       {/* List */}
       <div className="space-y-6">
         {isLoading ? (
-          <div className="text-center text-secondary-color py-10">Loading...</div>
+          <div className="text-center text-secondary-color py-10">Chargement...</div>
         ) : (
           products.map((product) => (
             <div key={product.productId} className="flex items-center gap-3 md:gap-4">
@@ -76,7 +76,7 @@ const TopSellingProducts = () => {
                     {product.productName}
                   </h3>
                   <p className="text-secondary-color text-xs md:text-sm font-medium">
-                    {product.totalSold} sold
+                    {product.totalSold} vendus
                   </p>
                 </div>
 

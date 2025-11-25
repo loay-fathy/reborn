@@ -96,13 +96,13 @@ export default function PremiumClientsPage() {
       fetchClients(); // Refresh list
     } catch (error) {
       console.error("Error saving client:", error);
-      alert(error instanceof Error ? error.message : "Failed to save client");
+      alert(error instanceof Error ? error.message : "Échec de l'enregistrement du client");
     }
   };
 
   const handleDeleteClient = async (client: Client) => {
     const token = getAuthToken();
-    if (!confirm("Are you sure you want to delete this client?")) return;
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce client?")) return;
 
     try {
       const res = await fetch(`/api/customers/${client.id}`, {
@@ -122,7 +122,7 @@ export default function PremiumClientsPage() {
       fetchClients(); // Refresh list
     } catch (error) {
       console.error("Error deleting client:", error);
-      alert(error instanceof Error ? error.message : "Failed to delete client");
+      alert(error instanceof Error ? error.message : "Échec de la suppression du client");
     }
   };
 
@@ -130,15 +130,15 @@ export default function PremiumClientsPage() {
     <>
       <div className="flex items-center justify-between mt-20 mr-20">
         <div className="flex items-center gap-3">
-          <h1 className="text-4xl font-bold">Premium Clients</h1>
+          <h1 className="text-4xl font-bold">Clients Premium</h1>
           <BadgePercent className="text-main-color" size={35} />
         </div>
 
-        <button onClick={() => { selectedClient ? router.push(`/premiumClients/${selectedClient?.id}`) : alert("Please select a client") }} className="flex items-center justify-center gap-3 bg-main-color hover:bg-[#a6652d] transition-colors text-white text-2xl px-4 py-4 rounded-3xl font-semibold w-64">
+        <button onClick={() => { selectedClient ? router.push(`/premiumClients/${selectedClient?.id}`) : alert("Veuillez sélectionner un client") }} className="flex items-center justify-center gap-3 bg-main-color hover:bg-[#a6652d] transition-colors text-white text-2xl px-4 py-4 rounded-3xl font-semibold w-64">
           <svg width="30" height="26" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M1.33337 23.8908C4.5956 19.9086 7.49249 17.6491 10.024 17.1122C12.5556 16.5753 14.9658 16.4942 17.2547 16.8688V24.0002L28 12.3635L17.2547 1.3335V8.1115C13.0223 8.14483 9.42404 9.66327 6.46004 12.6668C3.49693 15.6704 1.78804 19.4117 1.33337 23.8908Z" fill="white" stroke="white" strokeWidth="2.66667" strokeLinejoin="round" />
           </svg>
-          Next
+          Suivant
         </button>
       </div>
 

@@ -10,7 +10,7 @@ import {
   Store,
   ChevronLeft,
   Menu,
-  X, // Imported X icon for close button
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -23,33 +23,30 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Desktop collapse state
   const [isOpen, setIsOpen] = useState(false);
-  // Mobile drawer state
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // On mobile: force expanded width (304px). On desktop: toggle.
   const isExpanded = isOpen || isMobileOpen;
 
   const links = [
-    { name: "cashier", icon: <Banknote size={30} />, label: "Cashier" },
+    { name: "cashier", icon: <Banknote size={30} />, label: "Caisse" },
     {
       name: "dashboard",
       icon: <ChartNoAxesColumn size={30} />,
-      label: "Dashboard",
+      label: "Tableau de Bord",
     },
     {
       name: "premiumClients",
       icon: <BadgePercent size={30} />,
-      label: "Premium Clients",
+      label: "Clients Premium",
     },
-    { name: "products", icon: <PackageSearch size={30} />, label: "Products" },
-    { name: "users", icon: <UserRoundPlus size={30} />, label: "Users" },
+    { name: "products", icon: <PackageSearch size={30} />, label: "Produits" },
+    { name: "users", icon: <UserRoundPlus size={30} />, label: "Utilisateurs" },
   ];
 
   const options = [
-    { name: "expenses", icon: <Store size={30} />, label: "Expenses" },
-    { name: "logout", icon: <LogOut size={30} />, label: "Logout" },
+    { name: "expenses", icon: <Store size={30} />, label: "Dépenses" },
+    { name: "logout", icon: <LogOut size={30} />, label: "Déconnexion" },
   ];
 
   const handleLogout = () => {
@@ -67,7 +64,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* --- Mobile Toggle Button (Hamburger) --- */}
       <button
         onClick={() => setIsMobileOpen(true)}
         className="md:hidden fixed top-4 left-4 z-40 p-2 bg-white text-main-color rounded-full shadow-lg hover:bg-gray-100 transition-colors"
@@ -75,7 +71,6 @@ const Sidebar = () => {
         <Menu size={24} />
       </button>
 
-      {/* --- Mobile Backdrop --- */}
       {isMobileOpen && (
         <div
           onClick={() => setIsMobileOpen(false)}
@@ -83,7 +78,6 @@ const Sidebar = () => {
         />
       )}
 
-      {/* --- Sidebar --- */}
       <motion.aside
         initial={false}
         animate={{
@@ -91,13 +85,10 @@ const Sidebar = () => {
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className={`
-          /* Spacing: Reduced padding on mobile (px-4), standard on desktop (md:px-8) */
           px-4 md:px-8 
           bg-white shadow-2xl shadow-[#6625004D] rounded-e-4xl 
           fixed z-50 top-0 left-0 flex flex-col justify-between items-center
           h-screen
-          
-          /* Mobile Slide-in Logic */
           transform 
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} 
           md:translate-x-0 
@@ -105,7 +96,6 @@ const Sidebar = () => {
           md:transition-none
         `}
       >
-        {/* --- Mobile Close Icon (Top Right inside Sidebar) --- */}
         <button
           onClick={() => setIsMobileOpen(false)}
           className="md:hidden absolute top-4 right-4 text-gray-500 hover:text-main-color transition-colors"
@@ -113,8 +103,6 @@ const Sidebar = () => {
           <X size={28} />
         </button>
 
-        {/* --- Top Section --- */}
-        {/* Spacing: Reduced top margin on mobile (mt-10), standard on desktop (md:mt-20) */}
         <div className="mt-10 md:mt-20 w-full mx-auto flex flex-col items-start">
           <div className="flex flex-row gap-5 items-center">
             <Image
@@ -171,7 +159,6 @@ const Sidebar = () => {
           ))}
         </div>
 
-        {/* --- Bottom Section --- */}
         <div className="w-full mx-auto flex flex-col items-center mb-8">
           {options.map((option) =>
             option.name === "logout" ? (
@@ -218,7 +205,6 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* --- Desktop Width Toggle (Hidden on Mobile) --- */}
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className="cursor-pointer absolute top-23 -right-4 hidden md:block"

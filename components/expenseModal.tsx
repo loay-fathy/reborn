@@ -56,7 +56,7 @@ export default function ExpenseModal({
                 setCategories(data);
             } catch (err) {
                 console.error(err);
-                setError('Failed to load categories');
+                setError('Échec du chargement des catégories');
             } finally {
                 setCategoriesLoading(false);
             }
@@ -89,13 +89,13 @@ export default function ExpenseModal({
         e.preventDefault();
 
         if (!description.trim() || !amount || categoryId === '') {
-            setError('Please fill in all fields');
+            setError('Veuillez remplir tous les champs');
             return;
         }
 
         const numAmount = parseFloat(amount);
         if (isNaN(numAmount) || numAmount <= 0) {
-            setError('Please enter a valid amount');
+            setError('Veuillez entrer un montant valide');
             return;
         }
 
@@ -135,7 +135,7 @@ export default function ExpenseModal({
             onClose();
         } catch (err) {
             console.error(err);
-            setError(err instanceof Error ? err.message : 'Failed to save expense');
+            setError(err instanceof Error ? err.message : 'Échec de l\'enregistrement de la dépense');
         } finally {
             setLoading(false);
         }
@@ -154,7 +154,7 @@ export default function ExpenseModal({
                     >
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-4xl font-bold">
-                                {initialExpense ? 'Edit Expense' : 'Add New Expense'}
+                                {initialExpense ? 'Modifier la Dépense' : 'Ajouter une Nouvelle Dépense'}
                             </h2>
                             <button onClick={onClose} className="text-gray-600 hover:text-gray-900">
                                 <X size={30} />
@@ -178,7 +178,7 @@ export default function ExpenseModal({
                                     type="text"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Enter expense description"
+                                    placeholder="Entrez la description de la dépense"
                                     className="w-full border border-secondary-color text-lg rounded-3xl px-4 py-3 outline-none"
                                     disabled={loading}
                                 />
@@ -186,7 +186,7 @@ export default function ExpenseModal({
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Amount
+                                    Montant
                                 </label>
                                 <input
                                     type="number"
@@ -201,7 +201,7 @@ export default function ExpenseModal({
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Category
+                                    Catégorie
                                 </label>
                                 <select
                                     value={categoryId}
@@ -209,7 +209,7 @@ export default function ExpenseModal({
                                     className="w-full border border-secondary-color text-lg rounded-3xl px-4 py-3 outline-none bg-white"
                                     disabled={loading || categoriesLoading}
                                 >
-                                    <option value="">Select a category</option>
+                                    <option value="">Sélectionnez une catégorie</option>
                                     {categories.map((category) => (
                                         <option key={category.id} value={category.id}>
                                             {category.name}
@@ -225,14 +225,14 @@ export default function ExpenseModal({
                                     className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-3xl font-semibold hover:bg-gray-50 transition-colors"
                                     disabled={loading}
                                 >
-                                    Cancel
+                                    Annuler
                                 </button>
                                 <button
                                     type="submit"
                                     className="flex-1 px-6 py-3 bg-main-color text-white rounded-3xl font-semibold hover:bg-main-color/90 transition-colors disabled:opacity-50"
                                     disabled={loading || categoriesLoading}
                                 >
-                                    {loading ? 'Saving...' : initialExpense ? 'Update Expense' : 'Create Expense'}
+                                    {loading ? 'Enregistrement...' : initialExpense ? 'Mettre à Jour la Dépense' : 'Créer la Dépense'}
                                 </button>
                             </div>
                         </form>

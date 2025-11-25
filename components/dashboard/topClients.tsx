@@ -71,7 +71,7 @@ const TopClients = () => {
       {/* --- Header --- */}
       <div className="mb-6 md:mb-8">
         <h2 className="text-xl md:text-2xl font-bold text-[#111827]">
-          Top Clients & Spending
+          Meilleurs Clients & Dépenses
         </h2>
       </div>
 
@@ -81,7 +81,7 @@ const TopClients = () => {
         {/* Card 1 */}
         <div className="bg-[#F9FAFB] rounded-xl p-4 md:p-5 flex flex-col items-center justify-center gap-1">
           <span className="text-secondary-color font-medium text-xs md:text-sm">
-            Avg Spend per Client
+            Dépense Moy. par Client
           </span>
           <span className="text-xl md:text-2xl font-bold text-[#111827]">
             {isLoading ? "..." : formatCurrency(stats.avgSpend)}
@@ -91,7 +91,7 @@ const TopClients = () => {
         {/* Card 2 */}
         <div className="bg-[#F9FAFB] rounded-xl p-4 md:p-5 flex flex-col items-center justify-center gap-1">
           <span className="text-secondary-color font-medium text-xs md:text-sm">
-            Avg Orders per Client
+            Commandes Moy. par Client
           </span>
           <span className="text-xl md:text-2xl font-bold text-green-500">
             {isLoading ? "..." : stats.avgOrders}
@@ -101,7 +101,7 @@ const TopClients = () => {
         {/* Card 3 */}
         <div className="bg-[#F9FAFB] rounded-xl p-4 md:p-5 flex flex-col items-center justify-center gap-1">
           <span className="text-secondary-color font-medium text-xs md:text-sm">
-            Total Outstanding
+            Total en Attente
           </span>
           <span className="text-xl md:text-2xl font-bold text-red-500">
             {isLoading ? "..." : formatCurrency(stats.totalOutstanding)}
@@ -119,14 +119,14 @@ const TopClients = () => {
                 Client
               </th>
               <th className="pb-4 font-semibold text-secondary-color text-sm md:text-base">
-                Total Spent
+                Total Dépensé
               </th>
               {/* Discount column removed as per plan */}
               <th className="pb-4 font-semibold text-secondary-color text-sm md:text-base">
-                Orders
+                Commandes
               </th>
               <th className="pb-4 font-semibold text-secondary-color text-sm md:text-base">
-                Outstanding
+                En Attente
               </th>
             </tr>
             <tr>
@@ -138,7 +138,7 @@ const TopClients = () => {
           <tbody className="text-[#111827]">
             {isLoading ? (
               <tr>
-                <td colSpan={4} className="text-center py-10 text-secondary-color">Loading...</td>
+                <td colSpan={4} className="text-center py-10 text-secondary-color">Chargement...</td>
               </tr>
             ) : (
               clients.map((client, index) => (

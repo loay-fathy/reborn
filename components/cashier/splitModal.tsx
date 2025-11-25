@@ -75,14 +75,14 @@ export default function MixedPaymentModal({
                             className="bg-white w-full max-w-md p-7 rounded-2xl shadow-2xl"
                         >
                             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                                {allowPartial ? "Payment (Partial Allowed)" : "Payment (Cash + Card)"}
+                                {allowPartial ? "Paiement (Partiel Autorisé)" : "Paiement (Espèces + Carte)"}
                             </h2>
 
                             <div className="space-y-5">
                                 {/* Total price display */}
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <p className="text-sm text-gray-600">
-                                        {allowPartial ? "Order Total" : "Total Amount"}
+                                        {allowPartial ? "Total de la Commande" : "Montant Total"}
                                     </p>
                                     <p className="text-3xl font-bold text-main-color">
                                         ${totalPrice.toFixed(2)}
@@ -93,14 +93,14 @@ export default function MixedPaymentModal({
                                 {showCash && (
                                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Cash Paid
+                                            Espèces Payées
                                         </label>
                                         <input
                                             type="number"
                                             value={cashPaid}
                                             onChange={(e) => setCashPaid(e.target.value)}
                                             className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
-                                            placeholder="Enter cash amount"
+                                            placeholder="Entrez le montant en espèces"
                                         />
                                     </motion.div>
                                 )}
@@ -109,14 +109,14 @@ export default function MixedPaymentModal({
                                 {showCard && (
                                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Card Paid
+                                            Carte Payée
                                         </label>
                                         <input
                                             type="number"
                                             value={cardPaid}
                                             onChange={(e) => setCardPaid(e.target.value)}
                                             className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
-                                            placeholder="Enter card amount"
+                                            placeholder="Entrez le montant par carte"
                                         />
                                     </motion.div>
                                 )}
@@ -128,20 +128,20 @@ export default function MixedPaymentModal({
                                         animate={{ opacity: 1, height: "auto" }}
                                         className="bg-gray-50 border-2 border-gray-200 p-4 rounded-lg"
                                     >
-                                        <p className="text-gray-700 text-sm">Total Paid</p>
+                                        <p className="text-gray-700 text-sm">Total Payé</p>
                                         <p className="text-xl font-bold text-gray-900">
                                             ${totalPaid.toFixed(2)}
                                         </p>
 
                                         {remaining > 0 && (
                                             <p className={`text-sm mt-2 ${allowPartial ? "text-orange-600" : "text-red-600"}`}>
-                                                Remaining: ${remaining.toFixed(2)}
+                                                Restant: ${remaining.toFixed(2)}
                                             </p>
                                         )}
 
                                         {change > 0 && (
                                             <p className="text-sm text-green-600 mt-2">
-                                                Change: ${change.toFixed(2)}
+                                                Monnaie: ${change.toFixed(2)}
                                             </p>
                                         )}
                                     </motion.div>
@@ -153,7 +153,7 @@ export default function MixedPaymentModal({
                                         onClick={onClose}
                                         className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition"
                                     >
-                                        Cancel
+                                        Annuler
                                     </button>
 
                                     <button
@@ -164,7 +164,7 @@ export default function MixedPaymentModal({
                                         }}
                                         className="flex-1 py-3 text-white font-semibold rounded-lg transition disabled:bg-gray-300 disabled:cursor-not-allowed bg-main-color"
                                     >
-                                        Confirm {allowPartial && remaining > 0 ? "Partial" : "Order"}
+                                        Confirmer {allowPartial && remaining > 0 ? "Paiement Partiel" : "Commande"}
                                     </button>
                                 </div>
                             </div>

@@ -52,9 +52,9 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ sale, cartItem
             <div className="text-center mb-4">
                 <h2 className="text-xl font-bold mb-2">New Patisse</h2>
                 <p className="text-[11px] my-1 text-[#333]">33 B LOT RIAD SALAM BD MOHAMMAD 6 MOHAMMEDIA</p>
-                <p className="text-[11px] my-1 text-[#333]">Tel: +212 662-394164</p>
+                <p className="text-[11px] my-1 text-[#333]">Tél: +212 662-394164</p>
                 <p className="text-[11px] my-1 text-[#333]">Date: {sale.date}</p>
-                <p className="text-[11px] my-1 text-[#333]">Cashier: {sale.cashierName}</p>
+                <p className="text-[11px] my-1 text-[#333]">Caissier: {sale.cashierName}</p>
             </div>
 
             <hr className="border-none border-t border-dashed border-[#999] my-3" />
@@ -62,9 +62,9 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ sale, cartItem
             <table className="w-full border-collapse my-3">
                 <thead>
                     <tr>
-                        <th className="text-left py-1 border-b border-[#333] font-bold text-[11px]">Item</th>
-                        <th className="text-center py-1 border-b border-[#333] font-bold text-[11px]">Qty</th>
-                        <th className="text-right py-1 border-b border-[#333] font-bold text-[11px]">Price</th>
+                        <th className="text-left py-1 border-b border-[#333] font-bold text-[11px]">Article</th>
+                        <th className="text-center py-1 border-b border-[#333] font-bold text-[11px]">Qté</th>
+                        <th className="text-right py-1 border-b border-[#333] font-bold text-[11px]">Prix</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,11 +82,11 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ sale, cartItem
 
             <div className="my-4">
                 <div className="flex justify-between py-1 text-[12px]">
-                    <span>Subtotal:</span>
+                    <span>Sous-total:</span>
                     <span>{subTotal.toFixed(2)} MAD</span>
                 </div>
                 <div className="flex justify-between py-1 text-[12px]">
-                    <span>Discount:</span>
+                    <span>Remise:</span>
                     <span>{discount.toFixed(2)} MAD</span>
                 </div>
                 <div className="flex justify-between py-1 text-[14px] font-bold mt-2 pt-2 border-t border-[#333]">
@@ -96,7 +96,7 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ sale, cartItem
 
                 {/* Always show Amount Paid (Deposit or Full) */}
                 <div className="flex justify-between py-1 text-[12px] mt-1">
-                    <span>{isCreditSale ? "Paid / Deposit:" : "Amount Paid:"}</span>
+                    <span>{isCreditSale ? "Payé / Acompte:" : "Montant Payé:"}</span>
                     <span>{amountPaid.toFixed(2)} MAD</span>
                 </div>
 
@@ -104,20 +104,20 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ sale, cartItem
                 {isCreditSale ? (
                     /* Logic for Premium Client (Credit) */
                     <div className="flex justify-between py-1 text-[12px] font-bold border-t border-dashed border-[#999] mt-1 pt-1">
-                        <span>Remaining Due:</span>
+                        <span>Reste à Payer:</span>
                         <span>{remainingAmount.toFixed(2)} MAD</span>
                     </div>
                 ) : (
                     /* Logic for Normal Cashier (Change) */
                     <div className="flex justify-between py-1 text-[12px]">
-                        <span>Change:</span>
+                        <span>Monnaie:</span>
                         <span>{change.toFixed(2)} MAD</span>
                     </div>
                 )}
             </div>
 
             <div className="text-center mt-4 text-[11px]">
-                <p className="my-1">Thank you for your visit!</p>
+                <p className="my-1">Merci pour votre visite!</p>
             </div>
         </div>
     );

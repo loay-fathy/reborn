@@ -137,7 +137,7 @@ export default function DataTable({ getColumns, data, passSelectedClient, onDele
         }}
       />
       <CreationButton
-        text="New Client"
+        text="Nouveau client"
         icon={<Plus size={30} />}
         handleOnClick={() => {
           setIsModalOpen(true);

@@ -174,7 +174,7 @@ export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
                         <div className="bg-white  rounded-2xl shadow-xl overflow-hidden border border-zinc-200 flex flex-col max-h-[85vh]">
                             {/* Header */}
                             <div className="flex items-center justify-between p-6 border-b border-zinc-100 shrink-0">
-                                <h2 className="text-xl font-semibold text-zinc-900">Available Reports</h2>
+                                <h2 className="text-xl font-semibold text-zinc-900">Rapports disponibles</h2>
                                 <button
                                     onClick={onClose}
                                     className="p-2 -mr-2 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-full transition-colors"
@@ -274,15 +274,7 @@ export function ReportsModal({ isOpen, onClose }: ReportsModalProps) {
                                 </div>
                             </div>
 
-                            {/* Footer */}
-                            <div className="p-4 bg-zinc-50 border-t border-zinc-100 text-center shrink-0">
-                                <p className="text-xs text-zinc-500">
-                                    Need access to older archives?{" "}
-                                    <a href="#" className="text-blue-600 hover:underline font-medium">
-                                        Contact Support
-                                    </a>
-                                </p>
-                            </div>
+
                         </div>
                     </motion.div>
                 </>

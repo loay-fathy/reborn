@@ -101,7 +101,7 @@ export default function UserManagementPage() {
 
   // 3. Handle Delete
   const handleDeleteUser = async (id: number) => {
-    if (confirm("Are you sure you want to delete this user?")) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur?")) {
       try {
         const res = await fetch(`/api/users/${id}`, {
           method: "DELETE",
@@ -118,7 +118,7 @@ export default function UserManagementPage() {
         fetchUsers();
       } catch (error) {
         console.error("Error deleting user:", error);
-        alert("Failed to delete user");
+        alert("Échec de la suppression de l'utilisateur");
       }
     }
   };
@@ -158,7 +158,7 @@ export default function UserManagementPage() {
       fetchUsers(); // Refresh list
     } catch (error) {
       console.error("Error saving user:", error);
-      alert(error instanceof Error ? error.message : "Failed to save user");
+      alert(error instanceof Error ? error.message : "Échec de l'enregistrement de l'utilisateur");
     }
   };
 
@@ -168,7 +168,7 @@ export default function UserManagementPage() {
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-5xl font-semibold tracking-tight">
-            User Management
+            Gestion des Utilisateurs
           </h1>
           <div className="relative">
             <Users className="w-8 h-8 text-main-color" />
@@ -182,7 +182,7 @@ export default function UserManagementPage() {
           <Search className="w-8 h-8 shrink-0" />
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Rechercher"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent border-none outline-none w-full placeholder:text-white/80 text-white"
@@ -199,12 +199,12 @@ export default function UserManagementPage() {
                 <th className="py-6 px-6 font-bold text-xl text-main-color w-16 text-center">
                   #
                 </th>
-                <th className="py-6 px-6 font-bold text-xl">Name</th>
-                <th className="py-6 px-6 font-bold text-xl">Date Created</th>
-                <th className="py-6 px-6 font-bold text-xl">Role</th>
-                <th className="py-6 px-6 font-bold text-xl">Status</th>
+                <th className="py-6 px-6 font-bold text-xl">Nom</th>
+                <th className="py-6 px-6 font-bold text-xl">Date de Création</th>
+                <th className="py-6 px-6 font-bold text-xl">Rôle</th>
+                <th className="py-6 px-6 font-bold text-xl">État</th>
                 <th className="py-6 px-6 font-bold text-xl text-center">
-                  Action
+                  Actions
                 </th>
               </tr>
             </thead>
@@ -212,13 +212,13 @@ export default function UserManagementPage() {
               {isLoading ? (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-xl text-gray-500">
-                    Loading users...
+                    Chargement des utilisateurs...
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-xl text-gray-500">
-                    No users found.
+                    Aucun utilisateur trouvé.
                   </td>
                 </tr>
               ) : (
@@ -264,7 +264,7 @@ export default function UserManagementPage() {
                     <td className="py-5 px-6">
                       <div className="flex items-center gap-2">
                         <span className="text-secondary-color font-bold text-xl">
-                          {user.isActive ? "Active" : "Inactive"}
+                          {user.isActive ? "Actif" : "Inactif"}
                         </span>
                         <span
                           className={`h-3 w-3 rounded-full ${user.isActive
@@ -315,7 +315,7 @@ export default function UserManagementPage() {
 
       {/* Creation Button (Triggers Modal) */}
       <CreationButton
-        text="New User"
+        text="Nouvel Utilisateur"
         icon={<Plus />}
         handleOnClick={handleCreateNew}
       />

@@ -70,11 +70,11 @@ const ClientModal: React.FC<ClientModalProps> = ({
         handleChange("image", data.imageUrl);
       } else {
         console.error("Failed to upload image");
-        alert("Failed to upload image");
+        alert("Échec du téléchargement de l'image");
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Error uploading image");
+      alert("Erreur lors du téléchargement de l'image");
     } finally {
       setIsUploading(false);
     }
@@ -82,7 +82,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
 
   const handleSubmit = () => {
     if (!formData.name) {
-      alert("Please enter a name");
+      alert("Veuillez entrer un nom");
       return;
     }
     onSave(formData);
@@ -93,7 +93,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
   const ActiveToggle = (
     <>
       <span className="text-xs md:text-sm lg:text-3xl text-black sm:block hidden">
-        Active
+        Actif
       </span>
       <button
         type="button"
@@ -123,8 +123,8 @@ const ClientModal: React.FC<ClientModalProps> = ({
     <GenericModal
       isOpen={isOpen}
       onClose={onClose}
-      title={formData.name || "New Client"}
-      subtitle={formData.discountPercentage ? formData.discountPercentage + "%" : "No discount set"}
+      title={formData.name || "Nouveau Client"}
+      subtitle={formData.discountPercentage ? formData.discountPercentage + "%" : "Aucune remise définie"}
       imageSrc={formData.image}
       headerAction={ActiveToggle}
       onImageClick={handleImageClick}
@@ -144,7 +144,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
           <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
             <div className="bg-white p-3 rounded-xl shadow-lg flex flex-col items-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C2782F] mb-2"></div>
-              <span className="text-xs font-semibold text-gray-600">Uploading...</span>
+              <span className="text-xs font-semibold text-gray-600">Téléchargement...</span>
             </div>
           </div>
         )}
@@ -152,7 +152,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
         {/* Mobile Only Active Toggle */}
         <div className="flex sm:hidden items-center justify-between py-2 border-b">
           <label className="text-sm font-semibold text-secondary-color">
-            Active
+            Actif
           </label>
           {ActiveToggle}
         </div>
@@ -161,20 +161,20 @@ const ClientModal: React.FC<ClientModalProps> = ({
 
         <div className="flex items-center justify-between py-2 sm:py-3 md:py-4">
           <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black w-1/3">
-            Name
+            Nom
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
-            placeholder="Your name"
+            placeholder="Votre nom"
             className="text-sm sm:text-base md:text-xl lg:text-2xl text-right outline-none w-2/3 placeholder:text-secondary-color"
           />
         </div>
 
         <div className="flex items-center justify-between py-2 sm:py-3 md:py-4">
           <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black w-1/3">
-            Discount
+            Remise
           </label>
           <input
             type="number"
@@ -187,7 +187,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
 
         <div className="flex items-center justify-between py-2 sm:py-3 md:py-4">
           <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black w-1/3">
-            Balance
+            Solde
           </label>
           <input
             type="number"
@@ -205,7 +205,7 @@ const ClientModal: React.FC<ClientModalProps> = ({
           whileTap={{ scale: 0.98 }}
           className="mt-4 sm:mt-6 md:mt-8 w-full sm:w-auto bg-main-color hover:bg-main-color text-white text-sm sm:text-base md:text-lg lg:text-xl font-semibold px-8 sm:px-10 md:px-20 py-2.5 sm:py-3 md:py-5 rounded-xl sm:rounded-2xl shadow-lg transition-colors"
         >
-          Save Changes
+          Enregistrer les Modifications
         </motion.button>
       </div>
     </GenericModal>

@@ -60,7 +60,7 @@ export default function CategoryModal({
             setCategories(data);
         } catch (err) {
             console.error(err);
-            setError('Failed to load categories');
+            setError('Échec du chargement des catégories');
         } finally {
             setLoading(false);
         }
@@ -97,7 +97,7 @@ export default function CategoryModal({
                 setNewCategoryName('');
             } catch (err) {
                 console.error(err);
-                alert('Failed to create category');
+                alert('Échec de la création de la catégorie');
             }
         }
     };
@@ -126,7 +126,7 @@ export default function CategoryModal({
                 setEditingName('');
             } catch (err) {
                 console.error(err);
-                alert('Failed to update category');
+                alert('Échec de la mise à jour de la catégorie');
             }
         }
     };
@@ -137,7 +137,7 @@ export default function CategoryModal({
     };
 
     const handleDeleteCategory = async (id: number) => {
-        if (!confirm('Are you sure you want to delete this category?')) return;
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cette catégorie?')) return;
 
         try {
             const res = await fetch(endpoints.withId(id), {
@@ -156,7 +156,7 @@ export default function CategoryModal({
             await fetchCategories();
         } catch (err) {
             console.error(err);
-            alert(err instanceof Error ? err.message : 'Failed to delete category');
+            alert(err instanceof Error ? err.message : 'Échec de la suppression de la catégorie');
         }
     };
 
@@ -172,7 +172,7 @@ export default function CategoryModal({
                         className="bg-white rounded-4xl w-full max-w-4xl p-10 relative shadow-xl"
                     >
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-5xl font-bold">Category</h2>
+                            <h2 className="text-5xl font-bold">Catégorie</h2>
                             <button onClick={onClose} className="text-gray-600 hover:text-gray-900">
                                 <X size={30} />
                             </button>
@@ -182,11 +182,11 @@ export default function CategoryModal({
 
                         <div className="mt-4 space-y-3 max-h-[50vh] overflow-y-auto pr-2">
                             {loading ? (
-                                <p className="text-center text-gray-500">Loading...</p>
+                                <p className="text-center text-gray-500">Chargement...</p>
                             ) : error ? (
                                 <p className="text-center text-red-500">{error}</p>
                             ) : categories.length === 0 ? (
-                                <p className="text-center text-gray-500">No categories found</p>
+                                <p className="text-center text-gray-500">Aucune catégorie trouvée</p>
                             ) : (
                                 categories.map((category) => (
                                     <div
@@ -201,7 +201,7 @@ export default function CategoryModal({
                                                     value={editingName}
                                                     onChange={(e) => setEditingName(e.target.value)}
                                                     className="flex-grow bg-transparent outline-none text-gray-700 placeholder-gray-400 mr-2"
-                                                    placeholder="Typing..."
+                                                    placeholder="Saisie..."
                                                 />
                                                 <div className="flex space-x-2">
                                                     <button
@@ -244,7 +244,7 @@ export default function CategoryModal({
 
                         <div className="mt-6">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Add new Category
+                                Ajouter une nouvelle Catégorie
                             </label>
                             <div className="flex space-x-3">
                                 <input

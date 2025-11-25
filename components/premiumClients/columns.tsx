@@ -15,21 +15,21 @@ export const getColumns = (
     },
     {
       accessorKey: "name",
-      header: "Name",
+      header: "Nom",
     },
     {
       accessorKey: "createdAt",
-      header: "Date Created",
+      header: "Date de Création",
       cell: ({ row }) => <span>{new Date(row.original.createdAt).toLocaleDateString()}</span>,
     },
     {
       accessorKey: "discountPercentage",
-      header: "Discount",
+      header: "Remise",
       cell: ({ row }) => <span>{row.original.discountPercentage}%</span>,
     },
     {
       accessorKey: "currentBalance",
-      header: "Balance",
+      header: "Solde",
       cell: ({ row }) => {
         const balance = row.original.currentBalance;
         return (

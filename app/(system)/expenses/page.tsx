@@ -163,8 +163,8 @@ const ExpensesPage = () => {
             {/* --- Header Section --- */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold">Expenses</h1>
-                    <p className="text-secondary-color mt-2 text-2xl">Manage and track all bakery expenses</p>
+                    <h1 className="text-3xl font-bold">Dépenses</h1>
+                    <p className="text-secondary-color mt-2 text-2xl">Gérer et suivre toutes les dépenses de la boulangerie</p>
                 </div>
 
                 {/* Search Bar */}
@@ -172,7 +172,7 @@ const ExpensesPage = () => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
                     <input
                         type="text"
-                        placeholder="Search expenses..."
+                        placeholder="Rechercher des dépenses..."
                         value={searchQuery}
                         onChange={(e) => {
                             setSearchQuery(e.target.value);
@@ -186,20 +186,20 @@ const ExpensesPage = () => {
             {/* --- Stats Cards --- */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <DataCard
-                    title="Total Expenses"
+                    title="Dépenses Totales"
                     value={`$${summaryData.totalAmount.toLocaleString()}`}
                     countText={summaryData.period}
                 />
                 <DataCard
                     title="Transactions"
                     value={summaryData.transactionCount.toString()}
-                    countText={`Expense entries ${summaryData.period}`}
+                    countText={`Entrées de dépenses ${summaryData.period}`}
                     icon={Receipt}
                 />
                 <DataCard
-                    title="Categories"
+                    title="Catégories"
                     value="8"
-                    countText="Active categories"
+                    countText="Catégories actives"
                     icon={LayoutGrid}
                 />
             </div>
@@ -209,21 +209,21 @@ const ExpensesPage = () => {
 
                 {/* Table Header / Actions */}
                 <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-gray-100">
-                    <h2 className="text-2xl font-bold text-gray-900">Expense Records</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">Registres de Dépenses</h2>
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setIsCategoryModalOpen(true)}
                             className="flex items-center gap-2 px-4 py-2 bg-[#1F2937] text-white rounded-2xl text-base font-bold hover:bg-gray-800 transition-colors"
                         >
                             <SlidersHorizontal size={16} />
-                            Category
+                            Catégorie
                         </button>
                         <button
                             onClick={handleAddExpense}
                             className="flex items-center gap-2 px-4 py-2 bg-[#16A34A] text-white rounded-2xl font-bold text-base hover:bg-[#16A34A]/90 transition-colors shadow-sm"
                         >
                             <Plus size={18} />
-                            Add New Expense
+                            Ajouter une Nouvelle Dépense
                         </button>
                     </div>
                 </div>
@@ -235,9 +235,9 @@ const ExpensesPage = () => {
                             <tr className="bg-gray-50/50 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <th className="px-6 py-4">Date</th>
                                 <th className="px-6 py-4 w-3/9">Description</th>
-                                <th className="px-6 py-4">Recorded By</th>
-                                <th className="px-6 py-4">Amount</th>
-                                <th className="px-6 py-4">Category</th>
+                                <th className="px-6 py-4">Enregistré Par</th>
+                                <th className="px-6 py-4">Montant</th>
+                                <th className="px-6 py-4">Catégorie</th>
                                 <th className="px-6 py-4 text-right"></th>
                             </tr>
                         </thead>
@@ -245,7 +245,7 @@ const ExpensesPage = () => {
                             {loading ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
-                                        Loading expenses...
+                                        Chargement des dépenses...
                                     </td>
                                 </tr>
                             ) : error ? (
@@ -257,7 +257,7 @@ const ExpensesPage = () => {
                             ) : expenses.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
-                                        No expenses found.
+                                        Aucune dépense trouvée.
                                     </td>
                                 </tr>
                             ) : (

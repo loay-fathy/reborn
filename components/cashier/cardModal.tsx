@@ -35,11 +35,11 @@ export default function CardModal({ isOpen, onClose, onConfirm }: CardModalProps
                             className="bg-white p-10 rounded-xl shadow-xl w-full max-w-sm"
                         >
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                                Card Payment
+                                Paiement par Carte
                             </h2>
 
                             <p className="text-gray-700 text-xl font-semibold mb-6 text-center">
-                                Is the card payment completed?
+                                Le paiement par carte est-il effectué?
                             </p>
 
                             <div className="flex gap-3 text-xl">

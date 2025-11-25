@@ -76,7 +76,7 @@ export function CashierNav({
                 }`}
               onClick={() => onSelectCategory(null)}
             >
-              All
+              Tous
             </li>
             {categories.map((category) => (
               <li
@@ -230,12 +230,12 @@ const Products = () => {
 
     } catch (error) {
       console.error("Error saving product:", error);
-      alert("Failed to save product");
+      alert("Échec de l'enregistrement du produit");
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this product?")) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce produit?")) {
       try {
         const res = await fetch(`/api/products/${id}`, {
           method: "DELETE",
@@ -250,7 +250,7 @@ const Products = () => {
         setRefreshTrigger(prev => !prev);
       } catch (error) {
         console.error("Error deleting product:", error);
-        alert("Failed to delete product");
+        alert("Échec de la suppression du produit");
       }
     }
   };
@@ -260,7 +260,7 @@ const Products = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 mx-auto">
         <div className="flex items-center gap-3 mb-4 md:mb-0">
-          <h1 className="text-4xl font-bold text-black">Products</h1>
+          <h1 className="text-4xl font-bold text-black">Produits</h1>
           <div className="bg-main-color/10 p-2 rounded-lg">
             <Package className="w-8 h-8 text-main-color" />
           </div>
@@ -273,7 +273,7 @@ const Products = () => {
             className="flex items-center gap-2 text-2xl font-semibold bg-[#1F2937] hover:bg-[#1F2937]/90 text-white px-6 py-4 rounded-3xl transition-colors"
           >
             <SlidersHorizontal size={25} />
-            <span className="font-semibold text-2xl">Categories</span>
+            <span className="font-semibold text-2xl">Catégories</span>
           </button>
           <div className="relative flex justify-center z-50">
             <motion.button
@@ -282,7 +282,7 @@ const Products = () => {
               className="flex items-center gap-2 text-2xl font-semibold bg-main-color hover:bg-main-color/90 text-white px-9 py-4 rounded-3xl transition-colors"
             >
               <Search className="w-7 h-7" />
-              <span className="font-semibold text-2xl">Search</span>
+              <span className="font-semibold text-2xl">Rechercher</span>
             </motion.button>
 
             <AnimatePresence>
@@ -438,7 +438,7 @@ const Products = () => {
       </div>
 
       <CreationButton
-        text="New product"
+        text="Nouveau produit"
         icon={<Plus />}
         handleOnClick={handleCreate}
       />

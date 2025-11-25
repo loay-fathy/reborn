@@ -67,11 +67,11 @@ export function OrderModal({ isOpen, onClose, status }: OrderModalProps) {
                                 transition={{ delay: 0.2 }}
                                 className="text-center"
                             >
-                                <h2 className="text-2xl font-semibold mb-2">{isSuccess ? "Order Succeeded!" : "Order Failed"}</h2>
+                                <h2 className="text-2xl font-semibold mb-2">{isSuccess ? "Commande Réussie!" : "Échec de la Commande"}</h2>
                                 <p className="text-muted-foreground">
                                     {isSuccess
-                                        ? "Your order has been placed successfully. Thank you for your purchase!"
-                                        : "Something went wrong with your order. Please try again later."}
+                                        ? "Votre commande a été passée avec succès. Merci pour votre achat!"
+                                        : "Un problème est survenu avec votre commande. Veuillez réessayer plus tard."}
                                 </p>
                             </motion.div>
 
@@ -84,7 +84,7 @@ export function OrderModal({ isOpen, onClose, status }: OrderModalProps) {
                                 className={`w-full mt-6 py-3 px-4 rounded-lg font-medium text-white transition-colors ${isSuccess ? "bg-main-color hover:bg-main-color/80" : "bg-red-500 hover:bg-red-600"
                                     }`}
                             >
-                                {isSuccess ? "Continue Shopping" : "Try Again"}
+                                {isSuccess ? "Continuer les Achats" : "Réessayer"}
                             </motion.button>
                         </div>
                     </motion.div>

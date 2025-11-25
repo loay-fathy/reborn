@@ -64,55 +64,55 @@ export default function DashboardPage() {
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
-            Dashboard Overview
+            Aperçu du Tableau de Bord
           </h1>
           <h3 className="text-lg md:text-xl text-secondary-color">
-            Welcome back! Here&apos;s what is happening today.
+            Bon retour! Voici ce qui se passe aujourd'hui.
           </h3>
         </div>
 
         <div className="flex items-center gap-3 self-start md:self-auto">
           <button className="bg-main-color rounded-xl h-fit text-white font-semibold flex gap-2 p-3 cursor-pointer hover:bg-opacity-90 transition-opacity" onClick={() => setIsReportsModalOpen(true)}>
             <FileText size={20} />
-            <span className="whitespace-nowrap">Download Report</span>
+            <span className="whitespace-nowrap">Télécharger le Rapport</span>
           </button>
 
         </div>
       </section>
       <section className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
         <DataCard
-          title="Today's Sales"
-          value={summary ? formatCurrency(summary.todaysSales) : "Loading..."}
+          title="Ventes d'Aujourd'hui"
+          value={summary ? formatCurrency(summary.todaysSales) : "Chargement..."}
           countText={
             summary
-              ? `${summary.todaysTransactions} orders completed`
-              : "Loading..."
+              ? `${summary.todaysTransactions} commandes complétées`
+              : "Chargement..."
           }
           percentage={summary?.salesChangePercentage || 0}
           isPositive={(summary?.salesChangePercentage || 0) >= 0}
           icon={ShoppingBag}
         />
         <DataCard
-          title="Total Customers"
-          value={summary ? summary.totalClients.toString() : "Loading..."}
+          title="Clients Totaux"
+          value={summary ? summary.totalClients.toString() : "Chargement..."}
           countText={
             summary
-              ? `${summary.newClientsThisWeek} new this week`
-              : "Loading..."
+              ? `${summary.newClientsThisWeek} nouveaux cette semaine`
+              : "Chargement..."
           }
           percentage={summary?.clientsChangePercentage || 0}
           isPositive={(summary?.clientsChangePercentage || 0) >= 0}
           icon={Users}
         />
         <DataCard
-          title="Discounts This Week"
+          title="Remises Cette Semaine"
           value={
-            summary ? formatCurrency(summary.discountsThisWeek) : "Loading..."
+            summary ? formatCurrency(summary.discountsThisWeek) : "Chargement..."
           }
           countText={
             summary
               ? `${summary.totalDiscountTransactions} transactions`
-              : "Loading..."
+              : "Chargement..."
           }
           percentage={summary?.discountsChangePercentage || 0}
           isPositive={(summary?.discountsChangePercentage || 0) >= 0}

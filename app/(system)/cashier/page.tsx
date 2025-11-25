@@ -381,7 +381,7 @@ function CashierContent() {
 
   const handleConfirmOrder = () => {
     if (activeCartItems.length === 0) {
-      alert("Cart is empty!");
+      alert("Le panier est vide!");
       return;
     }
 
@@ -389,7 +389,7 @@ function CashierContent() {
     const isCard = selectedPaymentMethods.includes("card");
 
     if (!isCash && !isCard) {
-      alert("Please select a payment method.");
+      alert("Veuillez sélectionner un mode de paiement.");
       return;
     }
 
@@ -451,12 +451,12 @@ function CashierContent() {
           {isCartMenuOpen && (
             <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
               <div className="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <span className="font-bold text-gray-700">Carts</span>
+                <span className="font-bold text-gray-700">Paniers</span>
                 <button
                   onClick={addNewCart}
                   className="text-xs bg-main-color text-white px-2 py-1 rounded-lg hover:bg-opacity-90 transition-colors"
                 >
-                  + New Cart
+                  + Nouveau Panier
                 </button>
               </div>
               <div className="max-h-60 overflow-y-auto">
@@ -468,16 +468,16 @@ function CashierContent() {
                   >
                     <div className="flex flex-col">
                       <span className={`font-medium ${activeCartIndex === index ? 'text-main-color' : 'text-gray-700'}`}>
-                        Cart #{index + 1}
+                        Panier #{index + 1}
                       </span>
                       <span className="text-xs text-gray-500">
-                        {cart.reduce((acc, item) => acc + item.quantity, 0)} items
+                        {cart.reduce((acc, item) => acc + item.quantity, 0)} articles
                       </span>
                     </div>
                     <button
                       onClick={(e) => deleteCart(index, e)}
                       className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 transition-colors"
-                      title="Delete Cart"
+                      title="Supprimer le Panier"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 6h18"></path>
@@ -498,7 +498,7 @@ function CashierContent() {
         <Search className="text-main-color" size={30} />
         <input
           type="text"
-          placeholder="Search Menu"
+          placeholder="Rechercher Menu"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full h-full p-2 rounded-l-2xl outline-none placeholder:font-semibold placeholder:text-secondary-color placeholder:text-xl"
@@ -508,15 +508,15 @@ function CashierContent() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {loading ? (
             <div className="col-span-full text-center py-10">
-              <p className="text-lg text-secondary-color">products are loading...</p>
+              <p className="text-lg text-secondary-color">les produits se chargent...</p>
             </div>
           ) : error ? (
             <div className="col-span-full text-center py-10">
-              <p className="text-lg text-red-500">Error loading products: {error}</p>
+              <p className="text-lg text-red-500">Erreur de chargement des produits: {error}</p>
             </div>
           ) : products.length === 0 ? (
             <div className="col-span-full text-center py-10">
-              <p className="text-lg text-secondary-color">No products available</p>
+              <p className="text-lg text-secondary-color">Aucun produit disponible</p>
             </div>
           ) : (
             products.map((product) => {
@@ -556,7 +556,7 @@ function CashierContent() {
             />
           )) : (
             <div className="col-span-full text-center py-10">
-              <p className="text-lg text-secondary-color">No items in cart</p>
+              <p className="text-lg text-secondary-color">Aucun article dans le panier</p>
             </div>
           )}
         </div>
@@ -565,11 +565,11 @@ function CashierContent() {
           <OvalLine className="w-full h-px bg-gray-100" />
           <div className="flex flex-col gap-2 2xl:gap-3 px-5 pt-5 pb-3 2xl:px-7 2xl:pt-7 2xl:pb-5">
             <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
-              <p className="text-secondary-color">Sub Total</p>
+              <p className="text-secondary-color">Sous-total</p>
               <p className="text-black">${subtotal}</p>
             </div>
             <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
-              <p className="text-secondary-color">Discount</p>
+              <p className="text-secondary-color">Remise</p>
               <p className="text-black">{discountPercentage > 0 ? `${discountPercentage}% (-$${discountAmount.toFixed(2)})` : "0%"}</p>
             </div>
             <OvalLine className="h-px bg-gray-100" />
@@ -611,7 +611,7 @@ function CashierContent() {
               className="w-full bg-black text-white text-xl 2xl:text-2xl font-bold h-[60px] 2xl:h-[75px] rounded-l-4xl cursor-pointer"
               onClick={handleConfirmOrder}
             >
-              Confirm Order
+              Confirmer la Commande
             </button>
           </div>
         </div>

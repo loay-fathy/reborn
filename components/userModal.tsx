@@ -85,15 +85,14 @@ const UserModal: React.FC<UserModalProps> = ({
 
       if (res.ok) {
         const data = await res.json();
-        // Assuming the User type uses 'image' for the profile picture URL
         handleTextChange("image", data.imageUrl);
       } else {
         console.error("Failed to upload image");
-        alert("Failed to upload image");
+        alert("Échec du téléchargement de l'image");
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Error uploading image");
+      alert("Erreur lors du téléchargement de l'image");
     } finally {
       setIsUploading(false);
     }
@@ -101,13 +100,13 @@ const UserModal: React.FC<UserModalProps> = ({
 
   const handleSubmit = () => {
     if (!formData.fullName?.trim()) {
-      alert("Please enter a Full Name");
+      alert("Veuillez entrer un nom complet");
       return;
     }
 
     // VALIDATION: Only require password if we are creating a NEW user
     if (!user && !formData.password?.trim()) {
-      alert("Please create a password for the new user");
+      alert("Veuillez créer un mot de passe pour le nouvel utilisateur");
       return;
     }
 
@@ -118,7 +117,7 @@ const UserModal: React.FC<UserModalProps> = ({
   const headerActiveToggle = (
     <div className="flex items-center gap-2 md:gap-6">
       <span className={`text-sm md:text-lg lg:text-2xl ${SECONDARY_TEXT}`}>
-        Active
+        Actif
       </span>
       <ToggleSwitch
         checked={!!formData.isActive}
@@ -132,8 +131,8 @@ const UserModal: React.FC<UserModalProps> = ({
     <GenericModal
       isOpen={isOpen}
       onClose={onClose}
-      title={formData.fullName || "New User"}
-      subtitle={formData.role || "Role undefined"}
+      title={formData.fullName || "Nouvel Utilisateur"}
+      subtitle={formData.role || "Rôle non défini"}
       imageSrc={formData.image}
       headerAction={headerActiveToggle}
       onImageClick={handleImageClick}
@@ -153,7 +152,7 @@ const UserModal: React.FC<UserModalProps> = ({
           <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
             <div className="bg-white p-3 rounded-xl shadow-lg flex flex-col items-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C2782F] mb-2"></div>
-              <span className="text-xs font-semibold text-gray-600">Uploading...</span>
+              <span className="text-xs font-semibold text-gray-600">Téléchargement...</span>
             </div>
           </div>
         )}
@@ -166,13 +165,13 @@ const UserModal: React.FC<UserModalProps> = ({
             {/* 1. Full Name */}
             <div className="flex items-center justify-between">
               <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black font-medium">
-                Full Name
+                Nom Complet
               </label>
               <input
                 type="text"
                 value={formData.fullName || ""}
                 onChange={(e) => handleTextChange("fullName", e.target.value)}
-                placeholder="Enter full name"
+                placeholder="Entrez le nom complet"
                 className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
               />
             </div>
@@ -180,13 +179,13 @@ const UserModal: React.FC<UserModalProps> = ({
             {/* 2. Username */}
             <div className="flex items-center justify-between">
               <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black font-medium">
-                Username
+                Nom d'utilisateur
               </label>
               <input
                 type="text"
                 value={formData.username || ""}
                 onChange={(e) => handleTextChange("username", e.target.value)}
-                placeholder="Enter username"
+                placeholder="Entrez le nom d'utilisateur"
                 className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
               />
             </div>
@@ -195,13 +194,13 @@ const UserModal: React.FC<UserModalProps> = ({
             {!user && (
               <div className="flex items-center justify-between">
                 <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black font-medium">
-                  Password
+                  Mot de passe
                 </label>
                 <input
                   type="password"
                   value={formData.password || ""}
                   onChange={(e) => handleTextChange("password", e.target.value)}
-                  placeholder="Enter password"
+                  placeholder="Entrez le mot de passe"
                   className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
                 />
               </div>
@@ -210,13 +209,13 @@ const UserModal: React.FC<UserModalProps> = ({
             {/* 4. Role */}
             <div className="flex items-center justify-between">
               <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black font-medium">
-                Role
+                Rôle
               </label>
               <input
                 type="text"
                 value={formData.role || ""}
                 onChange={(e) => handleTextChange("role", e.target.value)}
-                placeholder="Enter role"
+                placeholder="Entrez le rôle"
                 className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
               />
             </div>
@@ -257,7 +256,7 @@ const UserModal: React.FC<UserModalProps> = ({
             whileTap={{ scale: 0.98 }}
             className={`w-full sm:w-auto ${MAIN_COLOR} text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-md transition-opacity hover:opacity-90`}
           >
-            Save Change
+            Enregistrer les Modifications
           </motion.button>
         </div>
       </div>

@@ -56,23 +56,23 @@ const SalesOverview = () => {
         <div>
           {/* 2. Text scales slightly smaller on mobile */}
           <h2 className="text-xl md:text-2xl font-bold text-[#111827]">
-            Sales Overview
+            Aperçu des Ventes
           </h2>
           <p className="text-secondary-color text-sm mt-1">
-            Revenue trends over the last {activeTab.toLowerCase()}
+            Tendances de revenus au cours de la dernière {activeTab === "Week" ? "semaine" : activeTab === "Month" ? "mois" : "année"}
           </p>
         </div>
 
         {/* Toggle Buttons */}
         {/* 3. Container is full width on mobile (w-full), auto on desktop */}
         <div className="flex items-center bg-[#F3F4F6] p-1 rounded-2xl w-full sm:w-auto">
-          {["Week", "Month", "Year"].map((tab) => (
+          {["Semaine", "Mois", "Année"].map((tab, index) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => setActiveTab(["Week", "Month", "Year"][index])}
               // 4. Buttons are flex-1 (equal width) on mobile, normal size on desktop
               // 5. Reduced padding (px-3) on mobile
-              className={`flex-1 sm:flex-none px-3 md:px-6 py-2 text-sm font-medium rounded-2xl transition-all duration-200 outline-none cursor-pointer text-center ${activeTab === tab
+              className={`flex-1 sm:flex-none px-3 md:px-6 py-2 text-sm font-medium rounded-2xl transition-all duration-200 outline-none cursor-pointer text-center ${["Week", "Month", "Year"][index] === activeTab
                 ? "bg-main-color text-white shadow-sm"
                 : "text-secondary-color hover:text-gray-700 hover:bg-gray-200"
                 }`}
@@ -88,7 +88,7 @@ const SalesOverview = () => {
       <div className="h-[250px] md:h-[300px] w-full relative">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-            <span className="text-main-color font-semibold">Loading...</span>
+            <span className="text-main-color font-semibold">Chargement...</span>
           </div>
         )}
         <SpendingAreaChart

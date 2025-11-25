@@ -79,7 +79,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const handleSubmit = () => {
     if (!formData.name || !formData.categoryId) {
-      alert("Please fill in all required fields (Name, Category)");
+      alert("Veuillez remplir tous les champs requis (Nom, Catégorie)");
       return;
     }
     onSave(formData);
@@ -122,11 +122,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
         console.log(data.imageUrl);
       } else {
         console.error("Failed to upload image");
-        alert("Failed to upload image");
+        alert("Échec du téléchargement de l'image");
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Error uploading image");
+      alert("Erreur lors du téléchargement de l'image");
     } finally {
       setIsUploading(false);
     }
@@ -135,7 +135,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   // Active Toggle Component
   const ActiveToggle = (
     <>
-      <span className="text-xs md:text-sm lg:text-3xl text-black">Active</span>
+      <span className="text-xs md:text-sm lg:text-3xl text-black">Actif</span>
       <button
         type="button"
         onClick={() => handleChange("isActive", !formData.isActive)}
@@ -168,7 +168,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
     <GenericModal
       isOpen={isOpen}
       onClose={onClose}
-      title={formData.name || "New Product"}
+      title={formData.name || "Nouveau Produit"}
       subtitle={formData.price ? `$${formData.price}` : "$0.00"}
       imageSrc={formData.imageUrl || "/images/product.jpg"}
       headerAction={ActiveToggle}
@@ -189,7 +189,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Active Toggle - Mobile Only */}
         <div className="flex sm:hidden items-center justify-between py-2 border-b">
           <label className="text-sm font-semibold text-secondary-color">
-            Active
+            Actif
           </label>
           <button
             type="button"
@@ -219,13 +219,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Name Field */}
         <div className="flex items-center justify-between py-2 sm:py-3 md:py-4">
           <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black w-1/3">
-            Name
+            Nom
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
-            placeholder="Product Name"
+            placeholder="Nom du Produit"
             className="text-sm sm:text-base md:text-xl lg:text-2xl text-secondary-color text-right outline-none w-2/3 placeholder:text-secondary-color/50"
           />
         </div>
@@ -233,7 +233,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Category Field */}
         <div className="flex items-center justify-between py-2 sm:py-3 md:py-4">
           <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black w-1/3">
-            Category
+            Catégorie
           </label>
           <select
             value={formData.categoryId || ""}
@@ -241,7 +241,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             className="text-sm sm:text-base md:text-xl lg:text-2xl text-secondary-color text-right outline-none w-2/3 bg-transparent cursor-pointer"
           >
             <option value="" disabled>
-              Select Category
+              Sélectionnez une Catégorie
             </option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
@@ -254,7 +254,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Price Field */}
         <div className="flex items-center justify-between py-2 sm:py-3 md:py-4">
           <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black w-1/3">
-            Price
+            Prix
           </label>
           <input
             type="number"
@@ -291,7 +291,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           whileTap={{ scale: 0.98 }}
           className="mt-4 sm:mt-6 md:mt-8 w-full sm:w-auto bg-main-color hover:bg-main-color text-white text-sm sm:text-base md:text-lg lg:text-xl font-semibold px-8 sm:px-10 md:px-20 py-2.5 sm:py-3 md:py-5 rounded-xl sm:rounded-2xl shadow-lg transition-colors"
         >
-          Save Change
+          Enregistrer les Modifications
         </motion.button>
       </div>
     </GenericModal>

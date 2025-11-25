@@ -29,7 +29,7 @@ export default function Login() {
       });
 
       if (!res.ok) {
-        setError("Invalid username or password");
+        setError("Nom d'utilisateur ou mot de passe invalide");
         setLoading(false);
         return;
       }
@@ -40,7 +40,7 @@ export default function Login() {
       setLoading(false);
       window.location.href = "/cashier";
     } catch (error) {
-      setError("Network error");
+      setError("Erreur réseau");
       setLoading(false);
     }
   }
@@ -68,8 +68,8 @@ export default function Login() {
           </div>
         </div>
         <div className="w-1/2 h-full flex flex-col justify-center items-center p-12 lg:p-24 lg:px-20">
-          <h1 className="text-4xl xl:text-5xl font-bold mb-3">Welcome to KKL</h1>
-          <p className="text-lg lg:text-xl text-gray-500">Enter your details</p>
+          <h1 className="text-4xl xl:text-5xl font-bold mb-3">Bienvenue à KKL</h1>
+          <p className="text-lg lg:text-xl text-gray-500">Entrez vos identifiants</p>
           <form
             className="flex flex-col gap-8 w-full mt-9 max-w-md"
             onSubmit={handleLogin}
@@ -77,7 +77,7 @@ export default function Login() {
             <motion.div className="relative bg-white border-2 border-main-color rounded-2xl flex items-center">
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="Nom d'utilisateur"
                 name="username"
                 className="border-none h-12 outline-none w-full px-4 text-lg rounded-2xl"
               />
@@ -88,7 +88,7 @@ export default function Login() {
             <div className="relative bg-white border-2 border-main-color rounded-2xl flex items-center">
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Mot de passe"
                 name="password"
                 className="border-none h-12 outline-none w-full px-4 text-lg rounded-2xl"
               />
@@ -103,7 +103,7 @@ export default function Login() {
               className="bg-main-color text-white font-bold py-3 rounded-2xl cursor-pointer w-3/5 mx-auto hover:bg-main-color/90 transition-colors"
               disabled={loading}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Connexion..." : "Connexion"}
             </button>
           </form>
         </div>
