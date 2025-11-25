@@ -1,26 +1,37 @@
 "use client";
+
+import { useState, useEffect, Suspense, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import { ArrowLeft, Search, CreditCard, Coins } from "lucide-react";
+import { motion } from "framer-motion";
+import { useReactToPrint } from "react-to-print";
+import Receipt from "@/components/receipt";
+import { getAuthToken } from "@/lib/auth";
 import CashierNav from "@/components/cashier/nav";
-import { ArrowLeft, Coins, CreditCard, Search } from "lucide-react";
 import ProductCard from "@/components/cashier/productCard";
 import CheckoutProductItem from "@/components/cashier/checkoutProductItem";
-import { motion } from "motion/react";
-import OvalLine from "@/components/ui/ovalLine";
-import { useState, useEffect, Suspense } from "react";
 import Pagination from "@/components/ui/pagination";
-import Image from "next/image";
-import { getAuthToken } from "@/lib/auth";
+import OvalLine from "@/components/ui/ovalLine";
 import CashModal from "@/components/cashier/cashModal";
 import CardModal from "@/components/cashier/cardModal";
 import MixedPaymentModal from "@/components/cashier/splitModal";
 import { OrderModal } from "@/components/cashier/orderModal";
-import { useRouter, useSearchParams } from "next/navigation";
 
 interface Product {
   id: number;
-  imageUrl: string;
   name: string;
+  imageUrl: string;
   price: number;
   stock: number;
+}
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string;
+  quantity: number;
 }
 
 function CashierContent() {
@@ -32,21 +43,27 @@ function CashierContent() {
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // Receipt State
+  const receiptRef = useRef<HTMLDivElement>(null);
+  const [receiptData, setReceiptData] = useState<any>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: receiptRef,
+    onAfterPrint: () => setReceiptData(null),
+  });
+
+  // Trigger print when receipt data is ready
+  useEffect(() => {
+    if (receiptData) {
+      handlePrint();
+    }
+  }, [receiptData, handlePrint]);
+
   // 1. Get ID from URL
   const searchParams = useSearchParams();
   const idParam = searchParams.get("id");
 
   const router = useRouter();
-
-
-  // Cart State
-  interface CartItem {
-    id: number;
-    name: string;
-    price: number;
-    imageUrl: string;
-    quantity: number;
-  }
 
   // Multiple Carts State
   const [carts, setCarts] = useState<CartItem[][]>([[]]);
@@ -71,7 +88,6 @@ function CashierContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
-
 
   const addToCart = (product: Product) => {
     setCarts((prevCarts) => {
@@ -202,7 +218,7 @@ function CashierContent() {
     };
 
     fetchProducts();
-  }, [selectedCategoryId, searchQuery, currentPage, pageSize, refreshKey]);
+  }, [selectedCategoryId, searchQuery, currentPage, pageSize, refreshKey, token]);
 
   // Fetch Premium Client Discount
   useEffect(() => {
@@ -224,7 +240,7 @@ function CashierContent() {
       };
       fetchClient();
     }
-  }, [idParam, token]);
+  }, [idParam, token, router]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -302,24 +318,63 @@ function CashierContent() {
 
       console.log(`Order Confirmed! Change: $${details.change.toFixed(2)}`);
 
+      // Show Success Modal
+      setOrderModal({ isOpen: true, status: "success" });
+      // Trigger product refetch
+      setRefreshKey((prev) => prev + 1);
+
+      // Prepare receipt data
+      const currentSubtotal = activeCartItems
+        .reduce((total, item) => total + item.price * item.quantity, 0);
+      const currentDiscountAmount = (currentSubtotal * discountPercentage) / 100;
+      const currentTotalAmount = currentSubtotal - currentDiscountAmount;
+
+      const cashierName = localStorage.getItem("fullName") || "Cashier";
+
+      // Calculate receipt values based on client type
+      let amountPaid: number;
+      let changeAmount: number;
+
+      if (!idParam) {
+        // For normal clients: they pay in full, so amountPaid = total + change
+        changeAmount = details.change;
+        amountPaid = currentTotalAmount + changeAmount;
+      } else {
+        // For premium clients: they can pay partially
+        amountPaid = (details.cashAmount || 0) + (details.cardAmount || 0);
+        changeAmount = 0; // No change for credit sales
+      }
+
+      setReceiptData({
+        sale: {
+          cashierName,
+          subTotal: currentSubtotal.toFixed(2),
+          discount: currentDiscountAmount.toFixed(2),
+          totalAmount: currentTotalAmount.toFixed(2),
+          date: new Date().toLocaleString(),
+          amountPaid: amountPaid.toFixed(2),
+          change: changeAmount.toFixed(2),
+        },
+        cartItems: activeCartItems.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      });
+
+      // Clear current cart
       setCarts((prev) => {
         const newCarts = [...prev];
         newCarts[activeCartIndex] = [];
         return newCarts;
       });
 
-      // Show Success Modal
-      setOrderModal({ isOpen: true, status: "success" });
-      // Trigger product refetch
-      setRefreshKey((prev) => prev + 1);
-
       setIsCashModalOpen(false);
       setIsCardModalOpen(false);
       setIsSplitModalOpen(false);
 
     } catch (err) {
-      console.error("Sale processing error:", err);
-      // Show Error Modal
+      console.error("Sale Error:", err);
       setOrderModal({ isOpen: true, status: "failed" });
     }
   };
@@ -361,6 +416,17 @@ function CashierContent() {
 
   return (
     <div className="w-full h-[calc(100vh-2rem)] grid grid-cols-7 grid-rows-[auto_1fr] gap-6 mt-4 overflow-hidden">
+      {/* Hidden Receipt Component */}
+      <div style={{ display: "none" }}>
+        {receiptData && (
+          <Receipt
+            ref={receiptRef}
+            sale={receiptData.sale}
+            cartItems={receiptData.cartItems}
+          />
+        )}
+      </div>
+
       {/* ... Left Side Content (Nav, Search, Products) ... */}
       <div className="col-span-5 flex flex-row gap-4">
 
@@ -580,7 +646,7 @@ function CashierContent() {
         status={orderModal.status}
         onClose={() => setOrderModal((prev) => ({ ...prev, isOpen: false }))}
       />
-    </div>
+    </div >
   );
 }
 
