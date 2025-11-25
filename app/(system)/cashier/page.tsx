@@ -1,17 +1,19 @@
 "use client";
 import CashierNav from "@/components/cashier/nav";
-import { Coins, CreditCard, Search } from "lucide-react";
+import { ArrowLeft, Coins, CreditCard, Search } from "lucide-react";
 import ProductCard from "@/components/cashier/productCard";
 import CheckoutProductItem from "@/components/cashier/checkoutProductItem";
 import { motion } from "motion/react";
 import OvalLine from "@/components/ui/ovalLine";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Pagination from "@/components/ui/pagination";
 import Image from "next/image";
 import { getAuthToken } from "@/lib/auth";
 import CashModal from "@/components/cashier/cashModal";
 import CardModal from "@/components/cashier/cardModal";
 import MixedPaymentModal from "@/components/cashier/splitModal";
+import { OrderModal } from "@/components/cashier/orderModal";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Product {
   id: number;
@@ -21,12 +23,21 @@ interface Product {
   stock: number;
 }
 
-export default function Cashier() {
+function CashierContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // 1. Get ID from URL
+  const searchParams = useSearchParams();
+  const idParam = searchParams.get("id");
+
+  const router = useRouter();
+
 
   // Cart State
   interface CartItem {
@@ -107,7 +118,7 @@ export default function Cashier() {
 
   const addNewCart = () => {
     setCarts((prev) => [...prev, []]);
-    setActiveCartIndex(carts.length); // Switch to the new cart (length before update is index of new item)
+    setActiveCartIndex(carts.length);
     setIsCartMenuOpen(false);
   };
 
@@ -117,9 +128,8 @@ export default function Cashier() {
   };
 
   const deleteCart = (index: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent switching when clicking delete
+    e.stopPropagation();
     if (carts.length === 1) {
-      // If only one cart, just clear it
       setCarts([[]]);
       return;
     }
@@ -129,7 +139,6 @@ export default function Cashier() {
       return newCarts;
     });
 
-    // Adjust active index if needed
     if (activeCartIndex >= index && activeCartIndex > 0) {
       setActiveCartIndex(activeCartIndex - 1);
     } else if (activeCartIndex === index) {
@@ -143,7 +152,8 @@ export default function Cashier() {
     .reduce((total, item) => total + item.price * item.quantity, 0)
     .toFixed(2);
 
-  const totalAmount = subtotal;
+  const discountAmount = (parseFloat(subtotal) * discountPercentage) / 100;
+  const totalAmount = (parseFloat(subtotal) - discountAmount).toFixed(2);
 
   const token = getAuthToken();
   useEffect(() => {
@@ -175,7 +185,6 @@ export default function Cashier() {
           setProducts(data.data);
           setTotalRecords(data.totalRecords || 0);
         } else if (Array.isArray(data)) {
-          // Fallback for old API structure if needed
           setProducts(data);
           setTotalRecords(data.length);
         } else {
@@ -193,9 +202,30 @@ export default function Cashier() {
     };
 
     fetchProducts();
-  }, [selectedCategoryId, searchQuery, currentPage, pageSize]);
+  }, [selectedCategoryId, searchQuery, currentPage, pageSize, refreshKey]);
 
-  // Reset page when filter changes
+  // Fetch Premium Client Discount
+  useEffect(() => {
+    if (idParam) {
+      const fetchClient = async () => {
+        try {
+          const res = await fetch(`/api/customers/${idParam}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const user = data.data || data;
+            setDiscountPercentage(user.discountPercentage || 0);
+          }
+        } catch (err) {
+          console.error("Error fetching client:", err);
+          router.push(`/premiumclient/${idParam}`);
+        }
+      };
+      fetchClient();
+    }
+  }, [idParam, token]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategoryId, searchQuery]);
@@ -204,19 +234,57 @@ export default function Cashier() {
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
   const [isSplitModalOpen, setIsSplitModalOpen] = useState(false);
 
+  // State for split modal visibility options
+  const [splitModalConfig, setSplitModalConfig] = useState({ showCash: true, showCard: true });
+
+  // Order Modal State
+  const [orderModal, setOrderModal] = useState<{ isOpen: boolean; status: "success" | "failed" }>({
+    isOpen: false,
+    status: "success",
+  });
+
   const processSale = async (details: { change: number; method: string; cashAmount?: number; cardAmount?: number }) => {
     try {
+      // 2. Map sale details from cart (used in both scenarios)
       const saleDetails = activeCartItems.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
       }));
 
-      const payload = {
-        saleDetails,
-        paymentMethod: details.method,
-        splitCashAmount: details.cashAmount || 0,
-        splitCardAmount: details.cardAmount || 0,
-      };
+      let payload;
+
+      if (idParam) {
+        // --- SCENARIO: ID PARAM EXISTS ---
+        const totalPaid = (details.cashAmount || 0) + (details.cardAmount || 0);
+
+        // Determine method name for backend
+        let finalMethod = "Cash";
+        if (details.cardAmount && details.cardAmount > 0 && (!details.cashAmount || details.cashAmount === 0)) {
+          finalMethod = "Card";
+        } else if (details.cardAmount && details.cardAmount > 0 && details.cashAmount && details.cashAmount > 0) {
+          finalMethod = "split";
+        }
+
+        payload = {
+          saleDetails: saleDetails, // Actual cart data
+          paymentMethod: finalMethod,
+          amountPaid: totalPaid,
+          customerId: parseInt(idParam) || 0, // ID from param
+          splitCashAmount: details.cashAmount || 0,
+          splitCardAmount: details.cardAmount || 0
+        };
+
+      } else {
+        // --- SCENARIO: STANDARD SALE ---
+        payload = {
+          saleDetails,
+          paymentMethod: details.method,
+          splitCashAmount: details.cashAmount || 0,
+          splitCardAmount: details.cardAmount || 0,
+        };
+      }
+
+      console.log("Sending Payload:", payload);
 
       const response = await fetch("/api/sale", {
         method: "POST",
@@ -232,26 +300,27 @@ export default function Cashier() {
         throw new Error(errorData.error || "Failed to process sale");
       }
 
-      // Success
       console.log(`Order Confirmed! Change: $${details.change.toFixed(2)}`);
 
-      // Clear the cart
       setCarts((prev) => {
         const newCarts = [...prev];
         newCarts[activeCartIndex] = [];
         return newCarts;
       });
 
-      alert(`Order Confirmed! Change: $${details.change.toFixed(2)}`);
+      // Show Success Modal
+      setOrderModal({ isOpen: true, status: "success" });
+      // Trigger product refetch
+      setRefreshKey((prev) => prev + 1);
 
-      // Close modals
       setIsCashModalOpen(false);
       setIsCardModalOpen(false);
       setIsSplitModalOpen(false);
 
     } catch (err) {
       console.error("Sale processing error:", err);
-      alert(err instanceof Error ? err.message : "Failed to process sale");
+      // Show Error Modal
+      setOrderModal({ isOpen: true, status: "failed" });
     }
   };
 
@@ -264,22 +333,45 @@ export default function Cashier() {
     const isCash = selectedPaymentMethods.includes("cash");
     const isCard = selectedPaymentMethods.includes("card");
 
+    if (!isCash && !isCard) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    // 3. Logic for ID Param exists: Always use Split Modal, control visibility
+    if (idParam) {
+      setSplitModalConfig({
+        showCash: isCash,
+        showCard: isCard
+      });
+      setIsSplitModalOpen(true);
+      return;
+    }
+
+    // Standard Logic
     if (isCash && isCard) {
+      setSplitModalConfig({ showCash: true, showCard: true });
       setIsSplitModalOpen(true);
     } else if (isCash) {
       setIsCashModalOpen(true);
     } else if (isCard) {
       setIsCardModalOpen(true);
-    } else {
-      alert("Please select a payment method.");
     }
   };
 
   return (
     <div className="w-full h-[calc(100vh-2rem)] grid grid-cols-7 grid-rows-[auto_1fr] gap-6 mt-4 overflow-hidden">
+      {/* ... Left Side Content (Nav, Search, Products) ... */}
       <div className="col-span-5 flex flex-row gap-4">
 
-        <div className="relative z-40">
+        {idParam ? (<div className="relative z-40">
+          <button
+            className="relative bg-white w-20 h-20 flex items-center justify-center rounded-4xl cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => router.push(`/premiumClients/${idParam}`)}
+          >
+            <ArrowLeft size={35} className="text-main-color" />
+          </button>
+        </div>) : <div className="relative z-40">
           <button
             className="relative bg-white w-30 h-20 flex items-center justify-center rounded-4xl cursor-pointer hover:bg-gray-50 transition-colors"
             onClick={() => setIsCartMenuOpen(!isCartMenuOpen)}
@@ -332,7 +424,7 @@ export default function Cashier() {
               </div>
             </div>
           )}
-        </div>
+        </div>}
         <CashierNav onCategoryChange={setSelectedCategoryId} />
 
       </div>
@@ -412,7 +504,7 @@ export default function Cashier() {
             </div>
             <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
               <p className="text-secondary-color">Discount</p>
-              <p className="text-black">0%</p>
+              <p className="text-black">{discountPercentage > 0 ? `${discountPercentage}% (-$${discountAmount.toFixed(2)})` : "0%"}</p>
             </div>
             <OvalLine className="h-px bg-gray-100" />
             <div className="flex justify-between text-[16px] 2xl:text-[20px] font-semibold">
@@ -470,14 +562,33 @@ export default function Cashier() {
         onClose={() => setIsCardModalOpen(false)}
         onConfirm={() => processSale({ change: 0, method: "card" })}
       />
+
       <MixedPaymentModal
         isOpen={isSplitModalOpen}
         onClose={() => setIsSplitModalOpen(false)}
         totalPrice={parseFloat(totalAmount)}
+        showCash={splitModalConfig.showCash}
+        showCard={splitModalConfig.showCard}
+        allowPartial={!!idParam} // Allow partial payment if ID exists
         onConfirm={({ cash, card, change }) =>
           processSale({ change, method: "split", cashAmount: cash, cardAmount: card })
         }
       />
+
+      <OrderModal
+        isOpen={orderModal.isOpen}
+        status={orderModal.status}
+        onClose={() => setOrderModal((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
+  );
+}
+
+// Wrap in Suspense for useSearchParams
+export default function Cashier() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CashierContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MixedPaymentModalProps {
@@ -8,6 +8,10 @@ interface MixedPaymentModalProps {
     onClose: () => void;
     totalPrice: number;
     onConfirm: (details: { cash: number; card: number; change: number }) => void;
+    // New props to control behavior
+    showCash?: boolean;
+    showCard?: boolean;
+    allowPartial?: boolean;
 }
 
 export default function MixedPaymentModal({
@@ -15,19 +19,34 @@ export default function MixedPaymentModal({
     onClose,
     totalPrice,
     onConfirm,
+    showCash = true,
+    showCard = true,
+    allowPartial = false,
 }: MixedPaymentModalProps) {
     const [cashPaid, setCashPaid] = useState("");
     const [cardPaid, setCardPaid] = useState("");
+
+    // Reset inputs when modal opens or visibility props change
+    useEffect(() => {
+        if (isOpen) {
+            setCashPaid("");
+            setCardPaid("");
+        }
+    }, [isOpen, showCash, showCard]);
 
     const cash = parseFloat(cashPaid) || 0;
     const card = parseFloat(cardPaid) || 0;
     const totalPaid = cash + card;
 
     const remaining = totalPrice - totalPaid;
-    const change = totalPaid - totalPrice;
+    // Change is only applicable if they pay MORE than total
+    const change = totalPaid > totalPrice ? totalPaid - totalPrice : 0;
 
-    const canConfirm = totalPaid >= totalPrice;
-
+    // Validation Logic:
+    // 1. Must pay something (totalPaid > 0)
+    // 2. If NOT partial, must pay full amount or more
+    // 3. If partial IS allowed, they can pay any amount > 0
+    const canConfirm = totalPaid > 0 && (allowPartial || totalPaid >= totalPrice);
 
     return (
         <AnimatePresence>
@@ -56,47 +75,51 @@ export default function MixedPaymentModal({
                             className="bg-white w-full max-w-md p-7 rounded-2xl shadow-2xl"
                         >
                             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                                Payment (Cash + Card)
+                                {allowPartial ? "Payment (Partial Allowed)" : "Payment (Cash + Card)"}
                             </h2>
 
                             <div className="space-y-5">
-                                {/* Total price */}
+                                {/* Total price display */}
                                 <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-600">Total Amount</p>
-                                    <p
-                                        className="text-3xl font-bold text-main-color"
-                                    >
+                                    <p className="text-sm text-gray-600">
+                                        {allowPartial ? "Order Total" : "Total Amount"}
+                                    </p>
+                                    <p className="text-3xl font-bold text-main-color">
                                         ${totalPrice.toFixed(2)}
                                     </p>
                                 </div>
 
-                                {/* Cash input */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Cash Paid
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={cashPaid}
-                                        onChange={(e) => setCashPaid(e.target.value)}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
-                                        placeholder="Enter cash amount"
-                                    />
-                                </div>
+                                {/* Cash input - Only show if showCash is true */}
+                                {showCash && (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Cash Paid
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={cashPaid}
+                                            onChange={(e) => setCashPaid(e.target.value)}
+                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
+                                            placeholder="Enter cash amount"
+                                        />
+                                    </motion.div>
+                                )}
 
-                                {/* Card input */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Card Paid
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={cardPaid}
-                                        onChange={(e) => setCardPaid(e.target.value)}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
-                                        placeholder="Enter card amount"
-                                    />
-                                </div>
+                                {/* Card input - Only show if showCard is true */}
+                                {showCard && (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Card Paid
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={cardPaid}
+                                            onChange={(e) => setCardPaid(e.target.value)}
+                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
+                                            placeholder="Enter card amount"
+                                        />
+                                    </motion.div>
+                                )}
 
                                 {/* Payment summary */}
                                 {(cashPaid || cardPaid) && (
@@ -111,7 +134,7 @@ export default function MixedPaymentModal({
                                         </p>
 
                                         {remaining > 0 && (
-                                            <p className="text-sm text-red-600 mt-2">
+                                            <p className={`text-sm mt-2 ${allowPartial ? "text-orange-600" : "text-red-600"}`}>
                                                 Remaining: ${remaining.toFixed(2)}
                                             </p>
                                         )}
@@ -141,7 +164,7 @@ export default function MixedPaymentModal({
                                         }}
                                         className="flex-1 py-3 text-white font-semibold rounded-lg transition disabled:bg-gray-300 disabled:cursor-not-allowed bg-main-color"
                                     >
-                                        Confirm Order
+                                        Confirm {allowPartial && remaining > 0 ? "Partial" : "Order"}
                                     </button>
                                 </div>
                             </div>

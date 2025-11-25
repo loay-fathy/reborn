@@ -118,8 +118,8 @@ export default function CashierNav({ onCategoryChange }: CashierNavProps) {
                     }`}
                   onClick={() => handleCategoryClick(category.id)}
                 >
-                  {category.name.length > 12
-                    ? category.name.slice(0, 10) + "..."
+                  {category.name.length > 15
+                    ? category.name.slice(0, 12) + "..."
                     : category.name}
                 </li>
               ))

@@ -92,6 +92,9 @@ export default function Login() {
                 <LockKeyhole className="text-main-color w-20 h-11 p-2.5 bg-white border-l-[3] border-[#E8E8E8] rounded-2xl" />
               </button>
             </div>
+            {error && (
+              <p className="text-red-500 text-center font-semibold">{error}</p>
+            )}
             <button
               className="bg-main-color text-white font-bold py-3 rounded-2xl cursor-pointer w-3/5 mx-auto"
               disabled={loading}

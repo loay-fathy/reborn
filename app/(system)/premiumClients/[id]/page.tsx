@@ -257,7 +257,7 @@ export default function PremiumClientPage() {
       />
 
       <div>
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* 1. Reusable Area Chart Component */}
             <div className="lg:col-span-2 bg-white rounded-2xl p-6">

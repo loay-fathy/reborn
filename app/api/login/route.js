@@ -22,13 +22,14 @@ export async function POST(req) {
     );
   }
 
-  const data = await response.json(); // contains token
-
+  const data = await response.json(); // contains toke
   // Return user info and token
   return Response.json({
     token: data.token,
     username: data.username,
     fullName: data.fullName,
+    permissions: data.permissions,
     role: data.role,
+    imageUrl: data.imageUrl,
   });
 }

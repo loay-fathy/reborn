@@ -60,7 +60,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col gap-10 mt-10 mr-10 sm:mt-20 sm:mr-20">
+    <div className="flex flex-col gap-10 mt-10 mr-10 sm:mt-20 sm:mr-20 mb-10">
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">

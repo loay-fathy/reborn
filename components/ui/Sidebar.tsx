@@ -57,6 +57,14 @@ const Sidebar = () => {
     router.push("/");
   };
 
+  const imageUrl = localStorage.getItem("imageUrl");
+  const fullName = localStorage.getItem("fullName");
+  const role = localStorage.getItem("role");
+
+  const isValidUrl =
+    imageUrl &&
+    (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"));
+
   return (
     <>
       {/* --- Mobile Toggle Button (Hamburger) --- */}
@@ -110,8 +118,8 @@ const Sidebar = () => {
         <div className="mt-10 md:mt-20 w-full mx-auto flex flex-col items-start">
           <div className="flex flex-row gap-5 items-center">
             <Image
-              src="/images/profile.jpg"
-              alt="logo kkp"
+              src={isValidUrl ? imageUrl : "/images/profile.png"}
+              alt="profile picture"
               width={60}
               height={60}
               className="aspect-square rounded-2xl"
@@ -125,9 +133,9 @@ const Sidebar = () => {
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <p className="text-sm text-gray-500 mt-2">Admin</p>
+              <p className="text-sm text-gray-500 mt-2">{role}</p>
               <p className="text-base font-semibold text-main-color whitespace-nowrap">
-                Loay Fathy
+                {fullName}
               </p>
             </motion.div>
           </div>

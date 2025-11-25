@@ -83,7 +83,7 @@ export default function TransactionTable({
         </h2>
 
         <div className="flex flex-wrap gap-3">
-          <Link href={`/premiumCashier/?id=${clientId}`} className="cursor-pointer bg-[#1EA348] hover:bg-[#18853a] text-white px-8 py-3 outline-none rounded-2xl font-semibold text-sm transition-all shadow-sm">
+          <Link href={`/cashier/?id=${clientId}`} className="cursor-pointer bg-[#1EA348] hover:bg-[#18853a] text-white px-8 py-3 outline-none rounded-2xl font-semibold text-sm transition-all shadow-sm">
             $ Start New Order
           </Link>
         </div>

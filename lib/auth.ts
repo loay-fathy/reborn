@@ -9,11 +9,16 @@ export const setAuthData = (data: {
     token: string;
     fullName: string;
     role: string;
+    permissions: string;
+    imageUrl: string;
 }) => {
+    console.log(data.permissions);
     if (typeof window !== "undefined") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("fullName", data.fullName);
         localStorage.setItem("role", data.role);
+        localStorage.setItem("permissions", data.permissions);
+        localStorage.setItem("imageUrl", data.imageUrl);
     }
 };
 
@@ -22,6 +27,8 @@ export const clearAuthData = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("fullName");
         localStorage.removeItem("role");
+        localStorage.removeItem("permissions");
+        localStorage.removeItem("imageUrl");
     }
 };
 
