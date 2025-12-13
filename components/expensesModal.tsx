@@ -23,7 +23,7 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose }) => {
             opacity: 1,
             scale: 1,
             y: 0,
-            transition: { type: "spring", stiffness: 300, damping: 25 }
+            transition: { type: "spring" as const, stiffness: 300, damping: 25 }
         },
         exit: { opacity: 0, scale: 0.95, y: 10 },
     };
@@ -119,3 +119,5 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose }) => {
         </AnimatePresence>
     );
 };
+
+export default ExpenseModal;

@@ -59,7 +59,7 @@ const TopSellingProducts = () => {
             <div key={product.productId} className="flex items-center gap-3 md:gap-4">
               {/* Image Wrapper: Responsive Width/Height */}
               {/* Mobile: w-24 h-16 | Desktop: w-40 h-20 */}
-              <div className="relative w-24 h-16 md:w-40 md:h-20 shrink-0 rounded-xl overflow-hidden bg-gray-100">
+              <div className="relative w-24 h-16 md:w-34 md:h-17 shrink-0 rounded-xl overflow-hidden bg-gray-100">
                 <Image
                   src="/images/product.jpg" // Placeholder image
                   alt={product.productName}
@@ -73,7 +73,10 @@ const TopSellingProducts = () => {
                 {/* Name & Sold Count */}
                 <div className="pr-2">
                   <h3 className="font-bold text-[#1F2937] text-sm md:text-base truncate">
-                    {product.productName}
+                    {product.productName.length >= 15 ? 
+                      product.productName.slice(0, 12) + "..." : 
+                      product.productName
+                    }
                   </h3>
                   <p className="text-secondary-color text-xs md:text-sm font-medium">
                     {product.totalSold} vendus

@@ -118,15 +118,16 @@ const ExpenseRevenueChart = () => {
 
         {/* Toggle Buttons */}
         {/* Container is full width on mobile */}
-        <div className="flex items-center bg-[#F9FAFB] p-1 rounded-xl w-full md:w-auto">
-          {["Week", "Month", "Year"].map((tab) => (
+        <div className="flex items-center bg-[#F3F4F6] p-1 rounded-2xl w-full sm:w-auto">
+          {["Week", "Month", "Year"].map((tab, index) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              // Buttons share equal width (flex-1) on mobile for better touch targets
-              className={`flex-1 md:flex-none px-3 md:px-5 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-center ${activeTab === tab
-                ? "bg-[#C08B5C] text-white shadow-sm"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-200"
+              onClick={() => setActiveTab(["Week", "Month", "Year"][index])}
+              // 4. Buttons are flex-1 (equal width) on mobile, normal size on desktop
+              // 5. Reduced padding (px-3) on mobile
+              className={`flex-1 sm:flex-none px-3 md:px-6 py-2 text-sm font-medium rounded-2xl transition-all duration-200 outline-none cursor-pointer text-center ${["Week", "Month", "Year"][index] === activeTab
+                ? "bg-main-color text-white shadow-sm"
+                : "text-secondary-color hover:text-gray-700 hover:bg-gray-200"
                 }`}
             >
               {tab}

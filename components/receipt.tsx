@@ -33,91 +33,96 @@ const Receipt = React.forwardRef<HTMLDivElement, ReceiptProps>(({ sale, cartItem
     const isCreditSale = remainingAmount > 0.01;
 
     return (
-        <div ref={ref} className="printable-receipt p-5 bg-white text-black font-mono text-[13px] w-[80mm]">
+        // Ensure 'print:block' is here
+        <div ref={ref} className="w-[80mm] p-4 font-mono text-sm text-black bg-white">
             <style jsx global>{`
                 @media print {
-                    body * { visibility: hidden; }
-                    .printable-receipt, .printable-receipt * { visibility: visible; }
-                    .printable-receipt {
+                    /* 2. Make the Receipt Visible */
+                    .print\\:block, .print\\:block * {
+                        visibility: visible;
+                        height: auto;
+                        overflow: visible;
+                    }
+
+                    /* 3. Position the receipt at the top left of the paper */
+                    .print\\:block {
                         position: absolute;
                         left: 0;
                         top: 0;
                         width: 80mm;
-                        padding: 5mm;
                     }
+
+                    /* 4. Reset page margins for thermal printer */
                     @page { margin: 0; size: 80mm auto; }
                 }
             `}</style>
 
             <div className="text-center mb-4">
-                <h2 className="text-xl font-bold mb-2">New Patisse</h2>
-                <p className="text-[11px] my-1 text-[#333]">33 B LOT RIAD SALAM BD MOHAMMAD 6 MOHAMMEDIA</p>
-                <p className="text-[11px] my-1 text-[#333]">Tél: +212 662-394164</p>
-                <p className="text-[11px] my-1 text-[#333]">Date: {sale.date}</p>
-                <p className="text-[11px] my-1 text-[#333]">Caissier: {sale.cashierName}</p>
+                <h1 className="text-xl font-bold mb-1">New Patisse</h1>
+                <p className="text-xs">33 B LOT RIAD SALAM BD MOHAMMAD 6 MOHAMMEDIA</p>
+                <p className="text-xs mt-1">Tel: +212 662-394164</p>
+                <div className="mt-2 text-xs border-b border-dashed border-gray-400 pb-2">
+                    <p>Date: {sale.date}</p>
+                    <p>Caissier: {sale.cashierName}</p>
+                </div>
             </div>
 
-            <hr className="border-none border-t border-dashed border-[#999] my-3" />
-
-            <table className="w-full border-collapse my-3">
-                <thead>
-                    <tr>
-                        <th className="text-left py-1 border-b border-[#333] font-bold text-[11px]">Article</th>
-                        <th className="text-center py-1 border-b border-[#333] font-bold text-[11px]">Qté</th>
-                        <th className="text-right py-1 border-b border-[#333] font-bold text-[11px]">Prix</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cartItems.map((item, index) => (
-                        <tr key={index}>
-                            <td className="py-1 text-[11px]">{item.name}</td>
-                            <td className="text-center py-1 text-[11px]">{item.quantity}</td>
-                            <td className="text-right py-1 text-[11px]">{Number(item.price).toFixed(2)} MAD</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <hr className="border-none border-t border-dashed border-[#999] my-3" />
-
-            <div className="my-4">
-                <div className="flex justify-between py-1 text-[12px]">
-                    <span>Sous-total:</span>
-                    <span>{subTotal.toFixed(2)} MAD</span>
+            <div className="mb-4">
+                <div className="flex justify-between font-bold border-b border-dashed border-gray-400 pb-1 mb-2">
+                    <span className="w-1/2 text-left">Article</span>
+                    <span className="w-1/4 text-center">Qté</span>
+                    <span className="w-1/4 text-right">Prix</span>
                 </div>
-                <div className="flex justify-between py-1 text-[12px]">
-                    <span>Remise:</span>
-                    <span>{discount.toFixed(2)} MAD</span>
-                </div>
-                <div className="flex justify-between py-1 text-[14px] font-bold mt-2 pt-2 border-t border-[#333]">
-                    <span>Total:</span>
-                    <span>{totalAmount.toFixed(2)} MAD</span>
-                </div>
-
-                {/* Always show Amount Paid (Deposit or Full) */}
-                <div className="flex justify-between py-1 text-[12px] mt-1">
-                    <span>{isCreditSale ? "Payé / Acompte:" : "Montant Payé:"}</span>
-                    <span>{amountPaid.toFixed(2)} MAD</span>
-                </div>
-
-                {/* CONDITIONAL LOGIC */}
-                {isCreditSale ? (
-                    /* Logic for Premium Client (Credit) */
-                    <div className="flex justify-between py-1 text-[12px] font-bold border-t border-dashed border-[#999] mt-1 pt-1">
-                        <span>Reste à Payer:</span>
-                        <span>{remainingAmount.toFixed(2)} MAD</span>
+                {cartItems.map((item, index) => (
+                    <div key={index} className="flex justify-between mb-1 text-xs">
+                        <span className="w-1/2 text-left truncate pr-1">{item.name}</span>
+                        <span className="w-1/4 text-center">{item.quantity}</span>
+                        <span className="w-1/4 text-right">{Number(item.price).toFixed(2)}</span>
                     </div>
-                ) : (
-                    /* Logic for Normal Cashier (Change) */
-                    <div className="flex justify-between py-1 text-[12px]">
-                        <span>Monnaie:</span>
-                        <span>{change.toFixed(2)} MAD</span>
+                ))}
+            </div>
+
+            <div className="border-t border-dashed border-gray-400 pt-2 mb-4">
+                <div className="flex justify-between mb-1 text-xs">
+                    <span>Sous-total:</span>
+                    <span>{subTotal.toFixed(2)} DH</span>
+                </div>
+                {discount > 0 && (
+                    <div className="flex justify-between mb-1 text-xs">
+                        <span>Remise:</span>
+                        <span>-{discount.toFixed(2)} DH</span>
                     </div>
                 )}
+                <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t border-dashed border-gray-400">
+                    <span>Total:</span>
+                    <span>{totalAmount.toFixed(2)} DH</span>
+                </div>
+
+                {/* Amount Paid Section */}
+                <div className="flex justify-between mt-2 text-xs">
+                    <span>{isCreditSale ? "Payé / Acompte:" : "Montant Payé:"}</span>
+                    <span>{amountPaid.toFixed(2)} DH</span>
+                </div>
+
+                {/* Change or Remaining Section */}
+                <div className="flex justify-between text-xs font-bold mt-1">
+                    {isCreditSale ? (
+                         <>
+                            <span>Reste à Payer:</span>
+                            <span>{remainingAmount.toFixed(2)} DH</span>
+                         </>
+                    ) : (
+                        <>
+                            <span>Monnaie:</span>
+                            <span>{change.toFixed(2)} DH</span>
+                        </>
+                    )}
+                </div>
             </div>
 
-            <div className="text-center mt-4 text-[11px]">
+            <div className="text-center text-xs mt-6">
                 <p className="my-1">Merci pour votre visite!</p>
+                <p className="font-bold mb-2">Les articles vendus ne sont ni repris ni échangés</p>
             </div>
         </div>
     );

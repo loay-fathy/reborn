@@ -15,6 +15,15 @@ const nextConfig = {
         pathname: "/**", // allow all paths over HTTPS too
       },
     ],
+    unoptimized: true,
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*', // When frontend requests /api/anything...
+        destination: 'https://swagger.quoril.space/api/:path*', // ...send it to the backend.
+      },
+    ];
   },
 };
 

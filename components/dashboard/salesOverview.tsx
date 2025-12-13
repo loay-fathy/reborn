@@ -66,7 +66,7 @@ const SalesOverview = () => {
         {/* Toggle Buttons */}
         {/* 3. Container is full width on mobile (w-full), auto on desktop */}
         <div className="flex items-center bg-[#F3F4F6] p-1 rounded-2xl w-full sm:w-auto">
-          {["Semaine", "Mois", "Année"].map((tab, index) => (
+          {["Week", "Month", "Year"].map((tab, index) => (
             <button
               key={tab}
               onClick={() => setActiveTab(["Week", "Month", "Year"][index])}

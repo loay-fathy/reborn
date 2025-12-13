@@ -66,10 +66,10 @@ const CashierPerformance = () => {
           cashiers.map((cashier) => (
             <div
               key={cashier.userId}
-              className="bg-[#F9FAFB] p-4 md:p-5 rounded-xl md:rounded-2xl border border-gray-50"
+              className="bg-[#F9FAFB] p-3 md:p-4 rounded-xl md:rounded-2xl border border-gray-50"
             >
               {/* Top Row: Profile & Status */}
-              <div className="flex justify-between items-start mb-4 md:mb-5">
+              <div className="flex justify-between items-start mb-2 md:mb-3">
                 <div className="flex items-center gap-3 md:gap-4">
                   {/* Avatar */}
                   <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl overflow-hidden shadow-sm shrink-0">
@@ -104,7 +104,7 @@ const CashierPerformance = () => {
                 {/* Avg Sale */}
                 <div className="text-right">
                   <p className="text-gray-400 text-[10px] md:text-xs mb-0.5 md:mb-1 font-medium">Vente Moy.</p>
-                  <p className="text-[#1F2937] font-bold text-base md:text-lg">${cashier.averageSaleValue}</p>
+                  <p className="text-[#1F2937] font-bold text-base md:text-lg">${cashier.averageSaleValue.toFixed(2)}</p>
                 </div>
               </div>
             </div>

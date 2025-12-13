@@ -1,37 +1,36 @@
 @import "tailwindcss";
 
 :root {
+  /* Your existing variables */
   --background: #f4f4f4;
   --foreground: #171717;
   --main-color: #bc7428;
   --secondary-color: #848382;
 }
+
+/* Configure Tailwind v4 Theme here */
+@theme {
+  /* Link Tailwind classes to your CSS variables */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-main-color: var(--main-color);
+  --color-secondary-color: var(--secondary-color);
+
+  /* Register the Montserrat font variable from layout.tsx */
+  --font-montserrat: var(--font-montserrat);
+}
+
+/* Base styles */
+body {
+  font-family: montserrat;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
 * {
   outline: none;
 }
+
 button {
   cursor: pointer;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-main-color: var(--main-color);
-  --color-secondary-color: var(--secondary-color);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #f4f4f4;
-    --foreground: #ededed;
-    --main-color: #bc7428;
-    --secondary-color: #848382;
-  }
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: var(--background);
 }

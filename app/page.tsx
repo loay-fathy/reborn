@@ -1,14 +1,36 @@
 "use client";
 import { ArrowDown, LockKeyhole } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 
 import { setAuthData } from "@/lib/auth";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react"; // Added AnimatePresence
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // --- NEW STATE FOR DROPDOWN ---
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedUsername, setSelectedUsername] = useState("");
+  // ------------------------------
+
+  // --- FETCH USERNAMES ON LOAD ---
+  useEffect(() => {
+    const fetchUsernames = async () => {
+      try {
+        const res = await fetch("/auth/users");
+        if (res.ok) {
+          const data = await res.json();
+          setUsernames(data);
+        }
+      } catch (err) {
+        console.error("Failed to load usernames", err);
+      }
+    };
+    fetchUsernames();
+  }, []);
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -17,12 +39,13 @@ export default function Login() {
 
     const formData = new FormData(e.currentTarget);
     const loginData = {
-      username: formData.get("username"),
+      // Use the state if selected, otherwise whatever was typed
+      username: selectedUsername || formData.get("username"),
       password: formData.get("password"),
     };
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
@@ -44,6 +67,12 @@ export default function Login() {
       setLoading(false);
     }
   }
+
+  // Helper to select a user from the list
+  const handleSelectUser = (name: string) => {
+    setSelectedUsername(name);
+    setShowDropdown(false);
+  };
 
   return (
     <section className="h-screen w-full p-12 pt-0 lg:p-24 lg:pt-0 overflow-hidden">
@@ -74,17 +103,52 @@ export default function Login() {
             className="flex flex-col gap-8 w-full mt-9 max-w-md"
             onSubmit={handleLogin}
           >
+            {/* USERNAME INPUT WITH DROPDOWN */}
             <motion.div className="relative bg-white border-2 border-main-color rounded-2xl flex items-center">
               <input
                 type="text"
                 placeholder="Nom d'utilisateur"
                 name="username"
-                className="border-none h-12 outline-none w-full px-4 text-lg rounded-2xl"
+                value={selectedUsername}
+                onChange={(e) => setSelectedUsername(e.target.value)}
+                autoComplete="off"
+                className="border-none h-12 outline-none w-full px-4 text-lg rounded-2xl bg-transparent z-10"
               />
-              <button className="cursor-pointer h-12 w-16 flex items-center justify-center bg-white border-l-[3px] border-[#E8E8E8] rounded-2xl">
-                <ArrowDown className="text-main-color w-6 h-6" />
+              <button 
+                type="button" // Important: type="button" prevents form submission
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="cursor-pointer h-12 w-16 flex items-center justify-center bg-white border-l-[3px] border-[#E8E8E8] rounded-r-2xl hover:bg-gray-50 transition-colors z-10"
+              >
+                <ArrowDown className={`text-main-color w-6 h-6 transition-transform ${showDropdown ? "rotate-180" : ""}`} />
               </button>
+
+              {/* DROPDOWN LIST */}
+              <AnimatePresence>
+                {showDropdown && (
+                  <motion.ul
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-100 rounded-xl shadow-xl max-h-48 overflow-y-auto z-50 divide-y divide-gray-100"
+                  >
+                    {usernames.length > 0 ? (
+                      usernames.map((name) => (
+                        <li 
+                          key={name}
+                          onClick={() => handleSelectUser(name)}
+                          className="px-4 py-3 hover:bg-main-color hover:text-white cursor-pointer transition-colors text-gray-700 font-medium"
+                        >
+                          {name}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="px-4 py-3 text-gray-400 text-center text-sm">Chargement...</li>
+                    )}
+                  </motion.ul>
+                )}
+              </AnimatePresence>
             </motion.div>
+
             <div className="relative bg-white border-2 border-main-color rounded-2xl flex items-center">
               <input
                 type="password"
@@ -92,7 +156,7 @@ export default function Login() {
                 name="password"
                 className="border-none h-12 outline-none w-full px-4 text-lg rounded-2xl"
               />
-              <button className="cursor-pointer h-12 w-16 flex items-center justify-center bg-white border-l-[3px] border-[#E8E8E8] rounded-2xl">
+              <button type="button" className="cursor-pointer h-12 w-16 flex items-center justify-center bg-white border-l-[3px] border-[#E8E8E8] rounded-2xl">
                 <LockKeyhole className="text-main-color w-6 h-6" />
               </button>
             </div>

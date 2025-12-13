@@ -8,16 +8,10 @@ interface GenericModalProps {
   onClose: () => void;
   title: string;
   subtitle?: string;
-  imageSrc?: string;
-  /**
-   * Optional component to render in the header (e.g., the Active Toggle)
-   * It will be wrapped in 'hidden sm:flex' to match your original responsive design
-   */
+  // UPDATE: Allow null to explicitly hide the image
+  imageSrc?: string | null; 
   headerAction?: React.ReactNode;
   children: React.ReactNode;
-  /**
-   * Optional handler for clicking the header image (e.g., to trigger file upload)
-   */
   onImageClick?: () => void;
 }
 
@@ -57,35 +51,42 @@ const GenericModal: React.FC<GenericModalProps> = ({
               {/* --- Header Section --- */}
               <div className="flex items-center justify-between p-3 sm:p-4 md:p-6 lg:p-8 shrink-0">
                 <div className="flex items-center gap-2 sm:gap-3 md:gap-8">
-                  {/* Profile Image - Clickable if onImageClick is provided */}
-                  <div
-                    onClick={onImageClick}
-                    className={`relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-30 lg:h-30 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shrink-0 ${onImageClick
-                      ? "cursor-pointer hover:opacity-90 transition-opacity"
-                      : ""
+                  
+                  {/* 
+                      UPDATE: Only render this block if imageSrc is NOT null.
+                      If it is undefined, it will show the default profile.jpg.
+                      If it is null, it hides completely.
+                  */}
+                  {imageSrc !== null && (
+                    <div
+                      onClick={onImageClick}
+                      className={`relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-30 lg:h-30 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shrink-0 ${
+                        onImageClick
+                          ? "cursor-pointer hover:opacity-90 transition-opacity"
+                          : ""
                       }`}
-                  >
-                    <Image
-                      src={imageSrc || "/images/profile.jpg"}
-                      width={120}
-                      height={120}
-                      alt={title}
-                      className="w-full h-full object-cover rounded-full"
-                    />
+                    >
+                      <Image
+                        // If imageSrc is empty string or undefined, use default
+                        src={imageSrc || "/images/profile.jpg"}
+                        width={120}
+                        height={120}
+                        alt={title}
+                        className="w-full h-full object-cover rounded-full"
+                      />
 
-                    {/* Badge / Icon Overlay */}
-                    <div className="absolute bottom-0 right-0 bg-main-color rounded-full lg:p-3 md:p-1">
-                      {/* If clickable, we might want to hint it's editable, but keeping original icon for now */}
-                      <svg
-                        className="w-2 h-2 sm:w-3 sm:h-3 md:w-6 md:h-6 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        {/* You might want to switch this to a Camera/Edit icon if onImageClick is present */}
-                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                      </svg>
+                      {/* Badge / Icon Overlay */}
+                      <div className="absolute bottom-0 right-0 bg-main-color rounded-full lg:p-3 md:p-1">
+                        <svg
+                          className="w-2 h-2 sm:w-3 sm:h-3 md:w-6 md:h-6 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Title & Subtitle */}
                   <div className="min-w-0 flex-1">

@@ -1,69 +1,72 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+
+import React from "react";
+import GenericModal from "@/components/ui/modal";
+import { Check, CreditCard, Terminal } from "lucide-react";
 
 interface CardModalProps {
     isOpen: boolean;
     onClose: () => void;
+    // --- ADD THIS LINE ---
+    totalAmount: number; 
+    // --------------------
     onConfirm: () => void;
 }
 
-export default function CardModal({ isOpen, onClose, onConfirm }: CardModalProps) {
+// Update component signature to destructure totalAmount
+export default function CardModal({ 
+    isOpen, 
+    onClose, 
+    totalAmount, // <-- Make sure to accept it here
+    onConfirm 
+}: CardModalProps) {
+
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    {/* Overlay */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/50 z-60"
-                    />
+        <GenericModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Paiement Carte Bancaire"
+            subtitle=""
+            imageSrc={null}
+        >
+            <div className="flex flex-col gap-6 p-4 max-w-md mx-auto">
+                
+                {/* Instruction */}
+                <div className="text-center text-gray-600 font-medium flex flex-col items-center gap-2">
+                    <div className="bg-blue-50 p-4 rounded-full text-blue-600 mb-2">
+                        <Terminal size={40} />
+                    </div>
+                    <p>Veuillez saisir ce montant sur le terminal de paiement (TPE)</p>
+                </div>
 
-                    {/* Modal */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        transition={{ type: "spring", duration: 0.4 }}
-                        onClick={onClose}
-                        className="fixed inset-0 z-70 flex items-center justify-center p-4"
+                {/* Display Screen */}
+                <div className="bg-gray-900 text-white p-6 rounded-xl shadow-inner font-mono text-center flex flex-col gap-2">
+                    <span className="text-gray-400 text-sm uppercase tracking-wider">Montant à Payer</span>
+                    <div className="flex items-center justify-center gap-3">
+                        <CreditCard className="text-blue-400" size={28} />
+                        {/* Display the amount */}
+                        <span className="text-4xl font-bold">{totalAmount.toFixed(2)} DH</span>
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col gap-3 mt-2">
+                    <button
+                        onClick={onConfirm}
+                        className="w-full py-4 rounded-xl font-bold text-white text-lg shadow-lg bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
                     >
-                        <div
-                            onClick={(e) => e.stopPropagation()}
-                            className="bg-white p-10 rounded-xl shadow-xl w-full max-w-sm"
-                        >
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                                Paiement par Carte
-                            </h2>
+                        <Check size={24} />
+                        TRANSACTION RÉUSSIE
+                    </button>
 
-                            <p className="text-gray-700 text-xl font-semibold mb-6 text-center">
-                                Le paiement par carte est-il effectué?
-                            </p>
-
-                            <div className="flex gap-3 text-xl">
-                                <button
-                                    className="flex-1 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
-                                    onClick={onClose}
-                                >
-                                    No
-                                </button>
-
-                                <button
-                                    className="flex-1 py-3 rounded-lg bg-main-color text-white  hover:bg-main-color/80"
-                                    onClick={() => {
-                                        onConfirm();
-                                        onClose();
-                                    }}
-                                >
-                                    Yes
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
+                    <button
+                        onClick={onClose}
+                        className="w-full py-3 rounded-xl border-2 border-red-100 text-red-500 font-bold hover:bg-red-50 transition"
+                    >
+                        Annuler / Échec
+                    </button>
+                </div>
+            </div>
+        </GenericModal>
     );
 }

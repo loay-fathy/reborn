@@ -119,11 +119,23 @@ export default function DashboardPage() {
           icon={Tag}
         />
       </section>
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-        <SalesOverview />
-        <TopSellingProducts />
-        <ExpenseRevenueChart />
-        <CashierPerformance />
+
+      <section className="grid grid-cols-1 lg:grid-cols-10 gap-6 lg:gap-10">
+        <div className="lg:col-span-6">
+          <SalesOverview />
+        </div>
+        <div className="lg:col-span-4">
+          <TopSellingProducts />
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 lg:grid-cols-10 gap-6 lg:gap-10">
+        <div className="lg:col-span-6">
+          <ExpenseRevenueChart />
+        </div>
+        <div className="lg:col-span-4">
+          <CashierPerformance />
+        </div>
       </section>
       <section className="grid grid-cols-1 h-[calc(100vh-30rem)] lg:grid-cols-3 gap-6 lg:gap-10">
         <TopClients />
