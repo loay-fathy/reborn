@@ -19,7 +19,7 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   role: string;
-  image?: string; // Optional, might not be in API but used in UI
+  imageUrl?: string; // Changed from 'image' to 'imageUrl'
   permissions: number; // Add this!
 }
 

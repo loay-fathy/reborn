@@ -237,7 +237,7 @@ export default function UserManagementPage() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-18 h-18 rounded-3xl overflow-hidden">
                           <Image
-                            src={user.image || "/images/profile.jpg"}
+                            src={user.imageUrl || "/images/profile.jpg"}
                             alt={user.fullName}
                             fill
                             className="object-cover"

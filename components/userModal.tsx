@@ -10,6 +10,7 @@ import {
   removePermission
 } from "@/lib/permissions";
 import { getAuthToken } from "@/lib/auth";
+import { Eye, EyeOff } from "lucide-react";
 
 const MAIN_COLOR = "bg-[#C2782F]";
 const SECONDARY_TEXT = "text-[#8F9297]";
@@ -29,6 +30,9 @@ const UserModal: React.FC<UserModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<User>(user || emptyUser);
   const [isUploading, setIsUploading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
 
@@ -41,6 +45,8 @@ const UserModal: React.FC<UserModalProps> = ({
       permissions: baseUser.permissions || 0,
       password: ""
     });
+    setNewPassword("");
+    setShowPassword(false);
   }, [user, isOpen]);
 
   const handleTextChange = (field: keyof User, value: string) => {
@@ -85,7 +91,7 @@ const UserModal: React.FC<UserModalProps> = ({
 
       if (res.ok) {
         const data = await res.json();
-        handleTextChange("image", data.imageUrl);
+        handleTextChange("imageUrl", data.imageUrl);
       } else {
         console.error("Failed to upload image");
         alert("Échec du téléchargement de l'image");
@@ -95,6 +101,40 @@ const UserModal: React.FC<UserModalProps> = ({
       alert("Erreur lors du téléchargement de l'image");
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!user?.id) return;
+    if (!newPassword.trim()) {
+      alert("Veuillez entrer un nouveau mot de passe");
+      return;
+    }
+
+    setIsResettingPassword(true);
+    try {
+      const token = getAuthToken();
+      const res = await fetch(`/api/Admin/users/${user.id}/reset-password`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ newPassword: newPassword }),
+      });
+
+      if (res.ok) {
+        alert("Mot de passe réinitialisé avec succès");
+        setNewPassword("");
+      } else {
+        console.error("Failed to reset password");
+        alert("Échec de la réinitialisation du mot de passe");
+      }
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      alert("Erreur lors de la réinitialisation du mot de passe");
+    } finally {
+      setIsResettingPassword(false);
     }
   };
 
@@ -126,14 +166,14 @@ const UserModal: React.FC<UserModalProps> = ({
       />
     </div>
   );
-
+console.log(formData)
   return (
     <GenericModal
       isOpen={isOpen}
       onClose={onClose}
       title={formData.fullName || "Nouvel Utilisateur"}
       subtitle={formData.role || "Rôle non défini"}
-      imageSrc={formData.image}
+      imageSrc={formData.imageUrl || "/images/profile.jpg"}
       headerAction={headerActiveToggle}
       onImageClick={handleImageClick}
     >
@@ -186,25 +226,45 @@ const UserModal: React.FC<UserModalProps> = ({
                 value={formData.username || ""}
                 onChange={(e) => handleTextChange("username", e.target.value)}
                 placeholder="Entrez le nom d'utilisateur"
-                className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
+                className={`text-sm sm:text-base  md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
+                disabled
               />
             </div>
 
-            {/* 3. Password (HIDDEN if editing an existing user) */}
-            {!user && (
-              <div className="flex items-center justify-between">
-                <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black font-medium">
-                  Mot de passe
-                </label>
+            {/* 3. Password */}
+            <div className="flex items-center justify-between">
+              <label className="text-sm sm:text-base md:text-xl lg:text-3xl text-black font-medium">
+                {user ? "Nouveau mot de passe" : "Mot de passe"}
+              </label>
+              <div className="flex items-center gap-2 w-2/3">
                 <input
-                  type="password"
-                  value={formData.password || ""}
-                  onChange={(e) => handleTextChange("password", e.target.value)}
-                  placeholder="Entrez le mot de passe"
-                  className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none w-2/3 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
+                  type={showPassword ? "text" : "password"}
+                  value={user ? newPassword : (formData.password || "")}
+                  onChange={(e) => user ? setNewPassword(e.target.value) : handleTextChange("password", e.target.value)}
+                  placeholder={user ? "Laisser vide pour ne pas changer" : "Entrez le mot de passe"}
+                  className={`text-sm sm:text-base md:text-xl lg:text-2xl ${SECONDARY_TEXT} text-right outline-none flex-1 bg-transparent placeholder:${SECONDARY_TEXT}/50`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="p-1 text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                {user && newPassword.trim() && (
+                  <motion.button
+                    type="button"
+                    onClick={handlePasswordReset}
+                    disabled={isResettingPassword}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-3 py-1 bg-[#C2782F] text-white text-xs sm:text-sm rounded-lg disabled:opacity-50"
+                  >
+                    {isResettingPassword ? "..." : "Réinitialiser"}
+                  </motion.button>
+                )}
               </div>
-            )}
+            </div>
 
             {/* 4. Role */}
             <div className="flex items-center justify-between">
